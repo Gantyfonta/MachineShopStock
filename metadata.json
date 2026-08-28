@@ -1,0 +1,6 @@
+{
+  "name": "Machine Shop Stock Manager",
+  "description": "A pure HTML and JavaScript stock and raw materials inventory management application for machine shops.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

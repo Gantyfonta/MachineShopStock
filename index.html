@@ -1,0 +1,1066 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Machine Shop Stock & Tooling Manager</title>
+    <meta name="description" content="Manage machine shop bar stock, raw materials, tooling, end mills, machine parts, and cycle count inventory." />
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body class="bg-[#0b0d10] text-[#e2e8f0] min-h-screen flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    
+    <!-- Top Machined Metal Header -->
+    <header class="no-print border-b border-[#2d323b] metal-panel-dense sticky top-0 z-30 px-3 lg:px-6 py-2.5">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+        
+        <!-- Logo / Machined Steel Badge -->
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded bg-gradient-to-b from-[#3b82f6] to-[#1d4ed8] border border-blue-400 flex items-center justify-center font-mono font-bold text-white text-xs shadow-md">
+            MS
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-bold tracking-tight text-sm sm:text-base text-white flex items-center gap-1.5">
+                <span>SHOP</span><span class="text-blue-400 font-mono">STOCK</span>
+                <span class="text-[11px] text-[#64748b] font-normal hidden sm:inline">|</span>
+                <span class="text-xs text-[#94a3b8] font-mono font-normal hidden sm:inline">INVENTORY MATRIX</span>
+              </h1>
+              <span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-blue-950/80 text-blue-400 border border-blue-700/60 shadow-xs">
+                ONLINE
+              </span>
+            </div>
+            <p class="text-[10px] text-[#717d91] font-mono flex items-center gap-1.5">
+              <span class="steel-rivet"></span>
+              <span>Raw Stock • Tooling & Cutters • Machine Spares • Shop Floor Audit</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Domain Navigation Tabs -->
+        <div class="flex items-center gap-1 bg-[#121418] border border-[#2a2f38] p-1 rounded-md text-xs font-mono">
+          <button id="tab-btn-materials" class="metal-tab-btn active-tab px-3 py-1.5 rounded flex items-center gap-1.5 font-bold" data-tab="materials">
+            <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            <span>Raw Stock</span>
+            <span id="tab-badge-materials" class="px-1.5 py-0.2 rounded bg-[#1e242f] text-[10px] text-[#94a3b8] font-bold">0</span>
+          </button>
+          
+          <button id="tab-btn-tools" class="metal-tab-btn px-3 py-1.5 rounded flex items-center gap-1.5 font-medium" data-tab="tools">
+            <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14 12 6-6a2.828 2.828 0 1 0-4-4l-6 6"/><path d="m18 16 4 4"/><path d="m17 7 3 3"/><path d="M3 21h4L17 11l-4-4L3 17v4z"/></svg>
+            <span>Tooling & Cutters</span>
+            <span id="tab-badge-tools" class="px-1.5 py-0.2 rounded bg-[#1e242f] text-[10px] text-[#94a3b8] font-bold">0</span>
+          </button>
+
+          <button id="tab-btn-parts" class="metal-tab-btn px-3 py-1.5 rounded flex items-center gap-1.5 font-medium" data-tab="parts">
+            <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Machine Spares</span>
+            <span id="tab-badge-parts" class="px-1.5 py-0.2 rounded bg-[#1e242f] text-[10px] text-[#94a3b8] font-bold">0</span>
+          </button>
+
+          <button id="tab-btn-audit" class="metal-tab-btn px-3 py-1.5 rounded flex items-center gap-1.5 font-medium text-cyan-300" data-tab="audit-count" title="Shop Floor Inventory Count Mode">
+            <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span>Take Inventory</span>
+          </button>
+        </div>
+
+        <!-- Top Right Actions -->
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="btn-quick-cut" class="btn-metal inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-mono font-medium">
+            <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+            <span>Cut / Drop</span>
+          </button>
+          
+          <button id="btn-cut-history" class="btn-metal inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-mono font-medium">
+            <svg class="w-3.5 h-3.5 text-[#94a3b8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Saw Log</span>
+          </button>
+
+          <!-- Primary Add Item Button (Dynamic text based on tab) -->
+          <button id="btn-add-primary" class="btn-metal-blue inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono font-bold">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span id="btn-add-primary-text">+ Add Stock</span>
+          </button>
+
+          <div class="h-4 w-px bg-[#333842] mx-0.5 hidden sm:block"></div>
+
+          <!-- Tools Dropdown -->
+          <div class="relative inline-block text-left">
+            <button id="btn-more-options" class="btn-metal inline-flex items-center gap-1 px-2.5 py-1.5 rounded text-xs font-mono" title="More Tools">
+              <svg class="w-3.5 h-3.5 text-[#94a3b8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+              <span>Tools</span>
+            </button>
+            <div id="menu-more-options" class="hidden absolute right-0 mt-1.5 w-56 rounded-md metal-panel border border-[#3d4452] shadow-2xl z-50 py-1 text-xs font-mono">
+              <button id="btn-export-csv" class="w-full text-left px-3.5 py-2 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export Active Inventory CSV
+              </button>
+              <button id="btn-import-csv" class="w-full text-left px-3.5 py-2 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import Inventory CSV
+              </button>
+              <button id="btn-print-labels" class="w-full text-left px-3.5 py-2 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+                Print Bin & Stock Labels
+              </button>
+              <div class="h-px bg-[#333842] my-1"></div>
+              <button id="btn-reset-demo" class="w-full text-left px-3.5 py-2 hover:bg-rose-950/50 text-rose-400 flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
+                Reset Demo Stock & Tools
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Shop Floor Interface -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 lg:p-6 space-y-3.5">
+      
+      <!-- Metrics Overview Cards (Machined Steel Gauge Style) -->
+      <section id="metrics-bar" class="no-print grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <!-- Metric 1: Total SKUs / Items -->
+        <div class="metal-card p-2.5 rounded">
+          <div class="text-[10px] uppercase text-[#8b98ab] font-mono font-bold mb-1 flex items-center justify-between">
+            <span id="metric-title-1">SKU Count</span>
+            <span class="steel-rivet"></span>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span id="metric-total-items" class="text-xl sm:text-2xl font-mono font-bold text-white">0</span>
+            <span id="metric-sub-1" class="text-[10px] text-[#64748b] font-mono">items</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Full Stock / Total Pieces -->
+        <div class="metal-card p-2.5 rounded">
+          <div class="text-[10px] uppercase text-[#8b98ab] font-mono font-bold mb-1 flex items-center justify-between">
+            <span id="metric-title-2">In-Stock Qty</span>
+            <svg class="w-3 h-3 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span id="metric-total-bars" class="text-xl sm:text-2xl font-mono font-bold text-blue-400">0</span>
+            <span id="metric-sub-2" class="text-[10px] text-[#64748b] font-mono">units</span>
+          </div>
+        </div>
+
+        <!-- Metric 3: Remnants / Tools In Carousel -->
+        <button id="metric-filter-offcuts" class="metal-card p-2.5 rounded text-left group">
+          <div class="text-[10px] uppercase text-[#8b98ab] group-hover:text-amber-400 font-mono font-bold mb-1 flex items-center justify-between">
+            <span id="metric-title-3">Usable Drops</span>
+            <svg class="w-3 h-3 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span id="metric-total-offcuts" class="text-xl sm:text-2xl font-mono font-bold text-amber-400">0</span>
+            <span id="metric-sub-3" class="text-[10px] text-[#64748b] font-mono">drops</span>
+          </div>
+        </button>
+
+        <!-- Metric 4: Low Stock Alert -->
+        <button id="metric-filter-low" class="metal-card p-2.5 rounded text-left group border-rose-900/40">
+          <div class="text-[10px] uppercase text-[#8b98ab] group-hover:text-rose-400 font-mono font-bold mb-1 flex items-center justify-between">
+            <span>Low / Reorder</span>
+            <svg class="w-3 h-3 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span id="metric-low-stock" class="text-xl sm:text-2xl font-mono font-bold text-rose-400">0</span>
+            <span class="text-[10px] text-rose-400/70 font-mono">alerts</span>
+          </div>
+        </button>
+
+        <!-- Metric 5: Job / Machine Allocated -->
+        <div class="metal-card p-2.5 rounded">
+          <div class="text-[10px] uppercase text-[#8b98ab] font-mono font-bold mb-1 flex items-center justify-between">
+            <span id="metric-title-5">Allocated</span>
+            <svg class="w-3 h-3 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <span id="metric-reserved" class="text-xl sm:text-2xl font-mono font-bold text-cyan-400">0</span>
+            <span id="metric-sub-5" class="text-[10px] text-[#64748b] font-mono">active</span>
+          </div>
+        </div>
+
+        <!-- Metric 6: Total Valuation -->
+        <div class="metal-card p-2.5 rounded">
+          <div class="text-[10px] uppercase text-[#8b98ab] font-mono font-bold mb-1 flex items-center justify-between">
+            <span>Asset Value</span>
+            <svg class="w-3 h-3 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="flex items-baseline gap-0.5 font-mono">
+            <span class="text-xs font-semibold text-emerald-400">$</span>
+            <span id="metric-total-value" class="text-lg sm:text-xl font-mono font-bold text-white">0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Control Toolbar: Search, Filters & Hold-to-Tick Instruction Banner -->
+      <section class="no-print metal-panel rounded p-3 space-y-2.5">
+        
+        <!-- Search and Primary Dropdowns -->
+        <div class="flex flex-col md:flex-row gap-2.5 items-stretch md:items-center justify-between">
+          <!-- Search Bar -->
+          <div class="relative flex-1">
+            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-[#64748b]">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Search inventory (SKU, Alloy, Tool type, Machine, OEM part #, Rack/Crib location)..."
+              class="w-full pl-8 pr-7 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-xs text-[#e2e8f0] placeholder-[#5a6578] focus:outline-none focus:border-blue-500 font-mono"
+            />
+            <button id="search-clear-btn" class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-[#64748b] hover:text-[#e2e8f0]">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <!-- Secondary Filters -->
+          <div class="flex items-center gap-2 flex-wrap">
+            
+            <!-- Shape / Machine Filter -->
+            <select id="filter-shape" class="bg-[#0f1216] border border-[#2d323b] text-xs text-[#cbd5e1] rounded px-2 py-1.5 focus:outline-none focus:border-blue-500 font-mono">
+              <option value="all">All Shapes / Profiles</option>
+              <option value="round-bar">Round Bar (●)</option>
+              <option value="flat-bar">Flat Bar (▬)</option>
+              <option value="square-bar">Square Bar (■)</option>
+              <option value="hex-bar">Hex Bar (⬡)</option>
+              <option value="round-tube">Round Tube (◎)</option>
+              <option value="square-tube">Square Tube (▣)</option>
+              <option value="plate-sheet">Plate / Sheet</option>
+              <option value="angle-iron">Angle Iron</option>
+              <option value="drill-rod">Drill Rod</option>
+            </select>
+
+            <!-- Status / Condition Filter -->
+            <select id="filter-status" class="bg-[#0f1216] border border-[#2d323b] text-xs text-[#cbd5e1] rounded px-2 py-1.5 focus:outline-none focus:border-blue-500 font-mono">
+              <option value="all">All Statuses</option>
+              <option value="in-stock">Optimal / In Stock</option>
+              <option value="low-stock">Low Stock Alerts</option>
+              <option value="reserved">Reserved / In Machine</option>
+              <option value="ordered">On Order</option>
+              <option value="has-offcuts">With Usable Drops</option>
+            </select>
+
+            <!-- Location Filter -->
+            <select id="filter-location" class="bg-[#0f1216] border border-[#2d323b] text-xs text-[#cbd5e1] rounded px-2 py-1.5 focus:outline-none focus:border-blue-500 font-mono">
+              <option value="all">All Locations</option>
+            </select>
+
+            <!-- View Toggle -->
+            <div class="flex items-center bg-[#0f1216] border border-[#2d323b] rounded p-0.5">
+              <button id="view-table-btn" class="px-2 py-1 rounded text-xs font-mono font-bold bg-[#282e39] text-white" title="Table View">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              </button>
+              <button id="view-cards-btn" class="px-2 py-1 rounded text-xs font-mono text-[#8b98ab] hover:text-[#e2e8f0]" title="Cards View">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Chips Bar (Dynamically populated based on active domain tab) -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 text-xs no-scrollbar font-mono" id="category-chips-container">
+          <!-- Populated dynamically based on Materials vs Tools vs Spares -->
+        </div>
+
+        <!-- Quick Help Bar: Hold-to-Tick Feature Notice -->
+        <div class="flex items-center justify-between text-[11px] text-[#717d91] font-mono pt-1 border-t border-[#23272f]">
+          <span class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+            <span>Tip: <strong class="text-[#cbd5e1]">Hold + or - for 1 second</strong> to rapidly tick quantities up or down automatically.</span>
+          </span>
+          <span class="hidden sm:inline text-[#5a6578]">Tactile Machined Shop Interface</span>
+        </div>
+      </section>
+
+      <!-- Batch Actions Bar (Revealed when items are selected) -->
+      <div id="batch-toolbar" class="hidden no-print metal-panel border-blue-500/60 rounded p-2.5 flex flex-wrap items-center justify-between gap-3 text-xs font-mono shadow-lg">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1.5 bg-blue-600 text-white font-bold px-2 py-0.5 rounded text-xs">
+            <span id="batch-selected-count">0</span> Selected
+          </div>
+          <span class="text-[#94a3b8]">Batch Operations:</span>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="batch-btn-adjust-qty" class="btn-metal inline-flex items-center gap-1 px-2.5 py-1 rounded">
+            <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Adjust Qty
+          </button>
+          <button id="batch-btn-change-location" class="btn-metal inline-flex items-center gap-1 px-2.5 py-1 rounded">
+            <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Set Location
+          </button>
+          <button id="batch-btn-set-status" class="btn-metal inline-flex items-center gap-1 px-2.5 py-1 rounded">
+            <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            Set Status
+          </button>
+          <button id="batch-btn-export" class="btn-metal inline-flex items-center gap-1 px-2.5 py-1 rounded">
+            <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export Selected
+          </button>
+          <button id="batch-btn-delete" class="btn-metal-danger inline-flex items-center gap-1 px-2.5 py-1 rounded font-bold">
+            <svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+            Delete Selected
+          </button>
+          <button id="batch-btn-clear" class="px-2 py-1 text-[#8b98ab] hover:text-white font-medium ml-1">
+            ✕ Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Stock / Tooling / Machine Spares Content View -->
+      <section id="stock-view-container" class="space-y-4">
+        
+        <!-- Table View Wrapper -->
+        <div id="table-view-wrapper" class="metal-panel rounded overflow-hidden shadow-md">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead id="main-table-head">
+                <!-- Dynamically populated based on active domain tab -->
+              </thead>
+              <tbody id="stock-table-body" class="divide-y divide-[#282d36] font-sans">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State Container -->
+          <div id="stock-empty-state" class="hidden p-10 text-center space-y-3 font-mono">
+            <div class="w-10 h-10 rounded bg-[#1a1e24] border border-[#333842] flex items-center justify-center mx-auto text-[#64748b]">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <h3 class="text-xs font-bold text-[#e2e8f0]">No inventory items match your search or filter</h3>
+            <p class="text-[11px] text-[#717d91] max-w-sm mx-auto">Try clearing your filters, adjusting the search term, or adding a new item.</p>
+            <button id="empty-state-reset-btn" class="btn-metal px-3 py-1.5 rounded text-xs text-blue-400 font-medium">
+              Clear All Filters
+            </button>
+          </div>
+        </div>
+
+        <!-- Cards / Matrix View (Toggled via view switcher) -->
+        <div id="cards-view-wrapper" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <!-- Dynamically populated cards -->
+        </div>
+
+        <!-- Take Inventory / Audit Cycle Count Checklist View -->
+        <div id="audit-view-wrapper" class="hidden space-y-3">
+          <div class="metal-panel rounded p-3.5 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-bold text-white flex items-center gap-2 font-mono">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                <span>Shop Floor Inventory Audit & Cycle Count</span>
+              </h2>
+              <p class="text-xs text-[#8b98ab] font-mono">Walk the shop floor, verify actual drawer/rack counts, and record verification stamps.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btn-audit-mark-all" class="btn-metal px-3 py-1.5 rounded text-xs font-mono font-medium">
+                Verify All In-Stock Items
+              </button>
+              <button id="btn-audit-export-report" class="btn-metal-blue px-3 py-1.5 rounded text-xs font-mono font-bold">
+                Export Audit Report
+              </button>
+            </div>
+          </div>
+
+          <div class="metal-panel rounded overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse text-xs font-mono">
+                <thead>
+                  <tr class="bg-[#14161a] text-[#8b98ab] border-b border-[#282d36] text-[10px] uppercase">
+                    <th class="py-2.5 px-3">Type</th>
+                    <th class="py-2.5 px-3">Item / Description</th>
+                    <th class="py-2.5 px-3">Location</th>
+                    <th class="py-2.5 px-3 text-center">Logged Qty</th>
+                    <th class="py-2.5 px-3 text-center">Actual Count Adjustment (Hold +/- to Tick)</th>
+                    <th class="py-2.5 px-3 text-center">Status / Discrepancy</th>
+                    <th class="py-2.5 px-3 text-right">Verification</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-table-body" class="divide-y divide-[#282d36]">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Printable Stock Labels Container -->
+      <section id="print-labels-container" class="print-only">
+        <!-- Rendered when printing -->
+      </section>
+
+    </main>
+
+    <!-- Machined Metal Footer -->
+    <footer class="no-print border-t border-[#2d323b] py-3 px-4 text-center text-xs text-[#717d91] metal-panel-dense font-mono">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p>Machine Shop Stock & Tooling Manager • Machined Metal Precision UI</p>
+        <p class="text-[11px] text-[#5a6578]">Rapid Hold-to-Tick Auto-Counter Active</p>
+      </div>
+    </footer>
+
+    <!-- ========================================================= -->
+    <!-- MODALS SECTION                                            -->
+    <!-- ========================================================= -->
+
+    <!-- MODAL: Custom Machined Delete Confirmation (Never blocked by iframe!) -->
+    <div id="modal-confirm-delete" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-4">
+      <div class="metal-panel rounded-md w-full max-w-md border border-rose-800 shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        <div class="px-5 py-3 border-b border-rose-900/50 flex items-center justify-between bg-[#1f1114]">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded bg-rose-600 text-white flex items-center justify-center font-bold">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/></svg>
+            </div>
+            <h2 class="text-sm font-bold text-white font-mono uppercase">Confirm Delete</h2>
+          </div>
+          <button id="modal-confirm-delete-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="p-5 space-y-3.5 text-xs font-mono">
+          <p id="modal-confirm-delete-msg" class="text-[#e2e8f0] leading-relaxed">
+            Are you sure you want to permanently remove this item from shop inventory?
+          </p>
+          <div class="p-2.5 bg-[#14161a] border border-[#2d323b] rounded text-[11px] text-[#94a3b8]">
+            ⚠️ This will remove the item, its log history, and its location mapping.
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#282d36]">
+            <button type="button" id="modal-confirm-delete-cancel" class="btn-metal px-3.5 py-1.5 rounded font-medium">Cancel</button>
+            <button type="button" id="modal-confirm-delete-btn" class="btn-metal-danger px-4 py-1.5 rounded font-bold shadow-md">Yes, Delete Item</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Add / Edit Material Stock -->
+    <div id="modal-material" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-4">
+      <div class="metal-panel rounded-md w-full max-w-2xl border border-[#3d4452] shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        <div class="px-5 py-3 border-b border-[#2d323b] flex items-center justify-between bg-[#16181d]">
+          <h2 id="modal-material-title" class="text-sm font-bold text-white flex items-center gap-2 font-mono">
+            <span>+ Add Machine Shop Material</span>
+          </h2>
+          <button id="modal-material-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <form id="form-material" class="p-5 space-y-3.5 text-xs">
+          <input type="hidden" id="input-material-id" value="" />
+
+          <!-- Presets Quick Select -->
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-[#8b98ab] mb-1.5 font-mono">Quick Presets (Common Alloys):</label>
+            <div class="flex flex-wrap gap-1.5" id="alloy-presets-container">
+              <button type="button" data-preset="6061-T6" data-cat="aluminum" data-name="6061-T6 Aluminum Round Bar" class="preset-btn btn-metal px-2 py-0.5 rounded text-[11px] font-mono">6061-T6 Alum</button>
+              <button type="button" data-preset="1018 Cold Rolled" data-cat="carbon-steel" data-name="1018 Cold Rolled Steel" class="preset-btn btn-metal px-2 py-0.5 rounded text-[11px] font-mono">1018 CR Steel</button>
+              <button type="button" data-preset="4140 HT" data-cat="alloy-steel" data-name="4140 Pre-Hardened Chromoly" class="preset-btn btn-metal px-2 py-0.5 rounded text-[11px] font-mono">4140 Pre-Hard</button>
+              <button type="button" data-preset="304 Stainless" data-cat="stainless" data-name="304 Stainless Steel" class="preset-btn btn-metal px-2 py-0.5 rounded text-[11px] font-mono">304 Stainless</button>
+              <button type="button" data-preset="360 Brass" data-cat="brass-bronze" data-name="360 Free-Cutting Brass" class="preset-btn btn-metal px-2 py-0.5 rounded text-[11px] font-mono">360 Brass</button>
+              <button type="button" data-preset="Delrin (POM)" data-cat="plastics" data-name="Delrin / Acetal Rod" class="preset-btn btn-metal px-2 py-0.5 rounded text-[11px] font-mono">Delrin / Acetal</button>
+              <button type="button" data-preset="O1 Tool Steel" data-cat="tool-steel" data-name="O1 Precision Drill Rod" class="preset-btn btn-metal px-2 py-0.5 rounded text-[11px] font-mono">O1 Tool Steel</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="sm:col-span-2">
+              <label for="input-name" class="block font-mono text-[11px] text-[#8b98ab] mb-1">MATERIAL DESCRIPTION *</label>
+              <input id="input-name" type="text" required placeholder="e.g. 6061-T6 Aluminum Round Bar 2.0&quot; OD" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] placeholder-[#5a6578] focus:outline-none focus:border-blue-500 font-mono text-xs" />
+            </div>
+
+            <div>
+              <label for="input-category" class="block font-mono text-[11px] text-[#8b98ab] mb-1">CATEGORY *</label>
+              <select id="input-category" required class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-blue-500 text-xs font-mono">
+                <option value="aluminum">Aluminum</option>
+                <option value="carbon-steel">Carbon Steel</option>
+                <option value="alloy-steel">Alloy Steel</option>
+                <option value="stainless">Stainless Steel</option>
+                <option value="tool-steel">Tool Steel</option>
+                <option value="brass-bronze">Brass & Bronze</option>
+                <option value="plastics">Plastics & Polymers</option>
+                <option value="titanium-exotic">Titanium & Exotic</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="input-alloy" class="block font-mono text-[11px] text-[#8b98ab] mb-1">ALLOY / GRADE SPEC *</label>
+              <input id="input-alloy" type="text" required placeholder="e.g. 6061-T6, 1018 CR, 4140 PH" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] placeholder-[#5a6578] focus:border-blue-500 font-mono text-xs" />
+            </div>
+
+            <div>
+              <label for="input-shape" class="block font-mono text-[11px] text-[#8b98ab] mb-1">PROFILE / SHAPE *</label>
+              <select id="input-shape" required class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-blue-500 text-xs font-mono">
+                <option value="round-bar">Round Bar (Solid)</option>
+                <option value="flat-bar">Flat / Rectangular Bar</option>
+                <option value="square-bar">Square Bar (Solid)</option>
+                <option value="hex-bar">Hexagon Bar</option>
+                <option value="round-tube">Round Tube / Pipe</option>
+                <option value="square-tube">Square / Rect Tube</option>
+                <option value="plate-sheet">Plate / Sheet</option>
+                <option value="angle-iron">Angle Iron / Structural</option>
+                <option value="drill-rod">Precision Drill Rod</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="input-sku" class="block font-mono text-[11px] text-[#8b98ab] mb-1">SKU / TAG CODE</label>
+              <input id="input-sku" type="text" placeholder="e.g. AL-6061-RD-2.000" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] placeholder-[#5a6578] focus:border-blue-500 font-mono text-xs" />
+            </div>
+          </div>
+
+          <!-- Dynamic Dimensions -->
+          <div class="p-3 metal-panel-dense rounded space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-[11px] uppercase tracking-wider text-[#94a3b8] font-mono">Stock Dimensions</span>
+              <div class="flex items-center gap-2 text-xs">
+                <label class="text-[#717d91] font-mono text-[11px]">Unit:</label>
+                <select id="input-unit" class="bg-[#0f1216] border border-[#2d323b] rounded px-2 py-0.5 text-[#e2e8f0] text-xs font-mono">
+                  <option value="in">Inches (in)</option>
+                  <option value="mm">Millimeters (mm)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="dimensions-inputs-container">
+              <div id="dim-group-diameter">
+                <label for="input-diameter" class="block text-[11px] font-mono text-[#8b98ab] mb-1">Diameter / OD</label>
+                <input id="input-diameter" type="number" step="0.001" min="0" placeholder="e.g. 2.0" class="w-full px-2 py-1 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs" />
+              </div>
+
+              <div id="dim-group-width" class="hidden">
+                <label for="input-width" class="block text-[11px] font-mono text-[#8b98ab] mb-1">Width</label>
+                <input id="input-width" type="number" step="0.001" min="0" placeholder="e.g. 2.0" class="w-full px-2 py-1 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs" />
+              </div>
+
+              <div id="dim-group-thickness" class="hidden">
+                <label for="input-thickness" class="block text-[11px] font-mono text-[#8b98ab] mb-1">Thickness</label>
+                <input id="input-thickness" type="number" step="0.001" min="0" placeholder="e.g. 0.5" class="w-full px-2 py-1 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs" />
+              </div>
+
+              <div id="dim-group-wall" class="hidden">
+                <label for="input-wall" class="block text-[11px] font-mono text-[#8b98ab] mb-1">Wall Thickness</label>
+                <input id="input-wall" type="number" step="0.001" min="0" placeholder="e.g. 0.125" class="w-full px-2 py-1 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs" />
+              </div>
+
+              <div id="dim-group-length">
+                <label for="input-length" class="block text-[11px] font-mono text-[#8b98ab] mb-1">Bar Length *</label>
+                <input id="input-length" type="number" step="0.1" min="0.1" required placeholder="e.g. 72, 144" class="w-full px-2 py-1 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Quantity, Location & Traceability -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            <div>
+              <label for="input-qty" class="block font-mono text-[11px] text-[#8b98ab] mb-1">STOCK BAR COUNT *</label>
+              <input id="input-qty" type="number" min="0" required placeholder="0" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono focus:border-blue-500 text-xs" />
+            </div>
+
+            <div>
+              <label for="input-min-threshold" class="block font-mono text-[11px] text-[#8b98ab] mb-1">MIN REORDER LEVEL</label>
+              <input id="input-min-threshold" type="number" min="0" placeholder="2" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs" />
+            </div>
+
+            <div>
+              <label for="input-cost" class="block font-mono text-[11px] text-[#8b98ab] mb-1">COST PER UNIT ($)</label>
+              <input id="input-cost" type="number" step="0.01" min="0" placeholder="0.00" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs" />
+            </div>
+
+            <div>
+              <label for="input-location" class="block font-mono text-[11px] text-[#8b98ab] mb-1">RACK / LOCATION *</label>
+              <input id="input-location" type="text" required placeholder="e.g. Cantilever A-1" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs" />
+            </div>
+
+            <div>
+              <label for="input-status" class="block font-mono text-[11px] text-[#8b98ab] mb-1">STOCK STATUS</label>
+              <select id="input-status" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs">
+                <option value="in-stock">In Stock (Optimal)</option>
+                <option value="low-stock">Low Stock</option>
+                <option value="reserved">Reserved for Job</option>
+                <option value="ordered">On Order</option>
+                <option value="scrap">Scrap / Review</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="input-heat" class="block font-mono text-[11px] text-[#8b98ab] mb-1">HEAT # / MTR LOT #</label>
+              <input id="input-heat" type="text" placeholder="e.g. HT-88491-AL" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-xs" />
+            </div>
+
+            <div>
+              <label for="input-supplier" class="block font-mono text-[11px] text-[#8b98ab] mb-1">SUPPLIER / VENDOR</label>
+              <input id="input-supplier" type="text" placeholder="e.g. Alro, McMaster" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-job" class="block font-mono text-[11px] text-[#8b98ab] mb-1">ALLOCATED JOB #</label>
+              <input id="input-job" type="text" placeholder="e.g. JOB-412" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-notes" class="block font-mono text-[11px] text-[#8b98ab] mb-1">NOTES / TIPS</label>
+              <input id="input-notes" type="text" placeholder="e.g. Cut parameters" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 border-t border-[#2d323b]">
+            <button type="button" id="modal-material-delete-btn" class="hidden btn-metal-danger px-3 py-1.5 rounded font-bold font-mono text-xs">
+              Delete Stock
+            </button>
+            <div class="flex items-center gap-2 ml-auto">
+              <button type="button" id="modal-material-cancel" class="btn-metal px-3.5 py-1.5 rounded font-medium">Cancel</button>
+              <button type="submit" class="btn-metal-blue px-4 py-1.5 rounded font-bold shadow-xs">Save Material Stock</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: Add / Edit Tool Item -->
+    <div id="modal-tool" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-4">
+      <div class="metal-panel rounded-md w-full max-w-2xl border border-[#3d4452] shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        <div class="px-5 py-3 border-b border-[#2d323b] flex items-center justify-between bg-[#16181d]">
+          <h2 id="modal-tool-title" class="text-sm font-bold text-white flex items-center gap-2 font-mono">
+            <span>+ Add Tooling / Cutter</span>
+          </h2>
+          <button id="modal-tool-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <form id="form-tool" class="p-5 space-y-3.5 text-xs font-mono">
+          <input type="hidden" id="input-tool-id" value="" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="sm:col-span-2">
+              <label for="input-tool-name" class="block text-[11px] text-[#8b98ab] mb-1">TOOL DESCRIPTION *</label>
+              <input id="input-tool-name" type="text" required placeholder="e.g. 1/2&quot; 4-Flute AlTiN Carbide End Mill" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-blue-500 text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-category" class="block text-[11px] text-[#8b98ab] mb-1">TOOL CATEGORY *</label>
+              <select id="input-tool-category" required class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-blue-500 text-xs">
+                <option value="end-mill">End Mill</option>
+                <option value="face-mill">Face Mill / Indexable</option>
+                <option value="drill-bit">Drill Bit / Spot Drill</option>
+                <option value="tap-thread">Tap / Thread Mill</option>
+                <option value="carbide-insert">Carbide Insert</option>
+                <option value="tool-holder">Tool Holder / Collet</option>
+                <option value="boring-reamer">Boring Bar / Reamer</option>
+                <option value="saw-blade">Saw Blade / Tooling</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="input-tool-sku" class="block text-[11px] text-[#8b98ab] mb-1">TOOL SKU / PART #</label>
+              <input id="input-tool-sku" type="text" placeholder="e.g. EM-CAR-0.500-4F" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-size" class="block text-[11px] text-[#8b98ab] mb-1">DIAMETER / SIZE *</label>
+              <input id="input-tool-size" type="text" required placeholder="e.g. 0.500&quot;, 3/8&quot;, 1/4-20" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-flutes" class="block text-[11px] text-[#8b98ab] mb-1">FLUTES / GEOMETRY</label>
+              <input id="input-tool-flutes" type="text" placeholder="e.g. 4-Flute, 2-Flute, Indexable" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-coating" class="block text-[11px] text-[#8b98ab] mb-1">COATING / FINISH</label>
+              <input id="input-tool-coating" type="text" placeholder="e.g. AlTiN, TiN, DLC, Uncoated" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-shank" class="block text-[11px] text-[#8b98ab] mb-1">SHANK / HOLDER TAPER</label>
+              <input id="input-tool-shank" type="text" placeholder="e.g. 1/2&quot; Shank, CAT40, ER32" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-insert-grade" class="block text-[11px] text-[#8b98ab] mb-1">INSERT GRADE / SUBSTRATE</label>
+              <input id="input-tool-insert-grade" type="text" placeholder="e.g. WNMG 432, Micrograin Carbide" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-location" class="block text-[11px] text-[#8b98ab] mb-1">CRIB DRAWER / LOCATION *</label>
+              <input id="input-tool-location" type="text" required placeholder="e.g. Crib Drawer 2A, Pod 5" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-qty" class="block text-[11px] text-[#8b98ab] mb-1">QTY IN STOCK *</label>
+              <input id="input-tool-qty" type="number" min="0" required placeholder="0" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-min" class="block text-[11px] text-[#8b98ab] mb-1">MIN REORDER THRESHOLD</label>
+              <input id="input-tool-min" type="number" min="0" placeholder="2" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-cost" class="block text-[11px] text-[#8b98ab] mb-1">COST PER UNIT ($)</label>
+              <input id="input-tool-cost" type="number" step="0.01" min="0" placeholder="0.00" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-condition" class="block text-[11px] text-[#8b98ab] mb-1">CONDITION</label>
+              <select id="input-tool-condition" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs">
+                <option value="new">New in Box (Optimal)</option>
+                <option value="in-machine">Mounted in Machine Carousel</option>
+                <option value="needs-regrind">Needs Regrind / Sharp</option>
+                <option value="worn-scrap">Worn / Scrap</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="input-tool-machine" class="block text-[11px] text-[#8b98ab] mb-1">ASSIGNED MACHINE</label>
+              <input id="input-tool-machine" type="text" placeholder="e.g. Haas VF-2, Mazak Lathe" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-tool-supplier" class="block text-[11px] text-[#8b98ab] mb-1">SUPPLIER</label>
+              <input id="input-tool-supplier" type="text" placeholder="e.g. Harvey Tool, Sandvik, MSC" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="input-tool-notes" class="block text-[11px] text-[#8b98ab] mb-1">SPEEDS, FEEDS & NOTES</label>
+              <input id="input-tool-notes" type="text" placeholder="e.g. 10k RPM 150 IPM in 6061 slotting" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 border-t border-[#2d323b]">
+            <button type="button" id="modal-tool-delete-btn" class="hidden btn-metal-danger px-3 py-1.5 rounded font-bold text-xs">
+              Delete Tool
+            </button>
+            <div class="flex items-center gap-2 ml-auto">
+              <button type="button" id="modal-tool-cancel" class="btn-metal px-3.5 py-1.5 rounded font-medium">Cancel</button>
+              <button type="submit" class="btn-metal-blue px-4 py-1.5 rounded font-bold shadow-xs">Save Tooling</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: Add / Edit Machine Part Item -->
+    <div id="modal-part" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-4">
+      <div class="metal-panel rounded-md w-full max-w-2xl border border-[#3d4452] shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        <div class="px-5 py-3 border-b border-[#2d323b] flex items-center justify-between bg-[#16181d]">
+          <h2 id="modal-part-title" class="text-sm font-bold text-white flex items-center gap-2 font-mono">
+            <span>+ Add Machine Spare Component</span>
+          </h2>
+          <button id="modal-part-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <form id="form-part" class="p-5 space-y-3.5 text-xs font-mono">
+          <input type="hidden" id="input-part-id" value="" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="sm:col-span-2">
+              <label for="input-part-name" class="block text-[11px] text-[#8b98ab] mb-1">PART / COMPONENT NAME *</label>
+              <input id="input-part-name" type="text" required placeholder="e.g. Haas VF-2 Spindle Drive Poly-V Belt" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-blue-500 text-xs" />
+            </div>
+
+            <div>
+              <label for="input-part-machine" class="block text-[11px] text-[#8b98ab] mb-1">TARGET MACHINE / ASSET *</label>
+              <input id="input-part-machine" type="text" required placeholder="e.g. Haas VF-2 CNC Mill, Bridgeport" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-part-number" class="block text-[11px] text-[#8b98ab] mb-1">OEM / PART NUMBER *</label>
+              <input id="input-part-number" type="text" required placeholder="e.g. 93-2144B, B-54 V-Belt" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-part-category" class="block text-[11px] text-[#8b98ab] mb-1">PART CATEGORY *</label>
+              <select id="input-part-category" required class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs">
+                <option value="belts-pulleys">Spindle Belts & Pulleys</option>
+                <option value="filters-lube">Way Lube & Filters</option>
+                <option value="wipers-seals">Way Wipers & Telescopic Seals</option>
+                <option value="coolant-nozzles">Coolant Pumps & Loc-Line</option>
+                <option value="bearings-screws">Ball Screws & Bearings</option>
+                <option value="electrical-sensors">Proximity Sensors & Limit Switches</option>
+                <option value="pneumatics-valves">Pneumatics & Air Regulators</option>
+                <option value="drawbar-spindle">Drawbar Springs & Grippers</option>
+                <option value="hardware-fittings">Fittings & Hardware</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="input-part-criticality" class="block text-[11px] text-[#8b98ab] mb-1">CRITICALITY LEVEL</label>
+              <select id="input-part-criticality" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs">
+                <option value="critical-spare">Critical Spare (Line-Stop Risk)</option>
+                <option value="standard">Standard Maintenance Item</option>
+                <option value="consumable">Consumable Wear Part</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="input-part-location" class="block text-[11px] text-[#8b98ab] mb-1">MAINTENANCE BIN / LOCATION *</label>
+              <input id="input-part-location" type="text" required placeholder="e.g. Maintenance Rack M-1, Bin 2" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-part-qty" class="block text-[11px] text-[#8b98ab] mb-1">QTY IN STOCK *</label>
+              <input id="input-part-qty" type="number" min="0" required placeholder="0" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-part-min" class="block text-[11px] text-[#8b98ab] mb-1">MIN REORDER THRESHOLD</label>
+              <input id="input-part-min" type="number" min="0" placeholder="1" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-part-cost" class="block text-[11px] text-[#8b98ab] mb-1">COST PER UNIT ($)</label>
+              <input id="input-part-cost" type="number" step="0.01" min="0" placeholder="0.00" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-part-brand" class="block text-[11px] text-[#8b98ab] mb-1">OEM / BRAND</label>
+              <input id="input-part-brand" type="text" placeholder="e.g. Haas, Gates, Omron, SMC" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="input-part-supplier" class="block text-[11px] text-[#8b98ab] mb-1">SUPPLIER</label>
+              <input id="input-part-supplier" type="text" placeholder="e.g. Haas HFO, McMaster, Misumi" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="input-part-notes" class="block text-[11px] text-[#8b98ab] mb-1">SERVICE INTERVAL & REPLACEMENT NOTES</label>
+              <input id="input-part-notes" type="text" placeholder="e.g. Inspect tension every 1,000 spindle hrs; replace @ 3,000 hrs" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 border-t border-[#2d323b]">
+            <button type="button" id="modal-part-delete-btn" class="hidden btn-metal-danger px-3 py-1.5 rounded font-bold text-xs">
+              Delete Machine Part
+            </button>
+            <div class="flex items-center gap-2 ml-auto">
+              <button type="button" id="modal-part-cancel" class="btn-metal px-3.5 py-1.5 rounded font-medium">Cancel</button>
+              <button type="submit" class="btn-metal-blue px-4 py-1.5 rounded font-bold shadow-xs">Save Machine Part</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: Quick Cut / Saw Drop Logger -->
+    <div id="modal-cut" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-4">
+      <div class="metal-panel rounded-md w-full max-w-lg border border-[#3d4452] shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        <div class="px-5 py-3 border-b border-[#2d323b] flex items-center justify-between bg-[#16181d]">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded bg-blue-600 text-white flex items-center justify-center font-bold font-mono">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg>
+            </div>
+            <h2 class="text-sm font-bold text-white font-mono">Log Material Saw Cut & Offcut Drop</h2>
+          </div>
+          <button id="modal-cut-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <form id="form-cut" class="p-5 space-y-3.5 text-xs font-mono">
+          <div>
+            <label for="cut-stock-select" class="block text-[11px] text-[#8b98ab] mb-1">SELECT STOCK MATERIAL BAR *</label>
+            <select id="cut-stock-select" required class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-blue-500 text-xs">
+              <!-- Dynamically populated stock options -->
+            </select>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2.5">
+            <div>
+              <label for="cut-length" class="block text-[11px] text-[#8b98ab] mb-1">CUT LENGTH *</label>
+              <div class="relative">
+                <input id="cut-length" type="number" step="0.01" min="0.1" required placeholder="e.g. 14.5" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-blue-500 text-xs" />
+                <span id="cut-unit-label" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-[#64748b] text-xs">in</span>
+              </div>
+            </div>
+
+            <div>
+              <label for="cut-qty" class="block text-[11px] text-[#8b98ab] mb-1">CUT QTY *</label>
+              <input id="cut-qty" type="number" min="1" value="1" required class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-blue-500 text-xs" />
+            </div>
+
+            <div>
+              <label for="cut-kerf" class="block text-[11px] text-[#8b98ab] mb-1">KERF ALLOWANCE</label>
+              <input id="cut-kerf" type="number" step="0.001" min="0" value="0.125" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-blue-500 text-xs" />
+            </div>
+          </div>
+
+          <div class="p-3 metal-panel-dense rounded space-y-1.5">
+            <div class="text-[#e2e8f0] font-medium flex items-center justify-between text-xs">
+              <span class="text-[#8b98ab]">Source Stock:</span>
+              <span id="cut-source-info" class="text-blue-400 font-bold">Full Stock Bar</span>
+            </div>
+            <div id="cut-math-preview" class="text-[#8b98ab] text-[11px] leading-relaxed">
+              Calculates remaining remnant length and automatically saves usable offcuts to inventory drop bins.
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label for="cut-job-id" class="block text-[11px] text-[#8b98ab] mb-1">JOB # / WORK ORDER</label>
+              <input id="cut-job-id" type="text" placeholder="e.g. JOB-512" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+
+            <div>
+              <label for="cut-machinist" class="block text-[11px] text-[#8b98ab] mb-1">MACHINIST / OPERATOR</label>
+              <input id="cut-machinist" type="text" placeholder="e.g. Dave M." class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="cut-save-offcut" checked class="rounded bg-[#0f1216] border-[#2d323b] text-blue-600" />
+            <label for="cut-save-offcut" class="text-[#94a3b8] cursor-pointer text-xs">
+              Auto-create remnant Offcut in drop bin if remaining length is ≥ 4 inches
+            </label>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#2d323b]">
+            <button type="button" id="modal-cut-cancel" class="btn-metal px-3.5 py-1.5 rounded font-medium">Cancel</button>
+            <button type="submit" class="btn-metal-blue px-4 py-1.5 rounded font-bold shadow-xs">Complete Cut & Deduct Stock</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: Manage Offcuts List -->
+    <div id="modal-offcuts" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-4">
+      <div class="metal-panel rounded-md w-full max-w-xl border border-[#3d4452] shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        <div class="px-5 py-3 border-b border-[#2d323b] flex items-center justify-between bg-[#16181d]">
+          <div>
+            <h2 id="modal-offcuts-title" class="text-sm font-bold text-white font-mono">Usable Offcuts & Drops</h2>
+            <p id="modal-offcuts-subtitle" class="text-[11px] text-blue-400 font-mono"></p>
+          </div>
+          <button id="modal-offcuts-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="p-5 space-y-3.5 text-xs font-mono">
+          <form id="form-add-offcut" class="p-3 metal-panel-dense rounded space-y-2.5">
+            <span class="font-bold text-[#e2e8f0] block text-[11px] uppercase">+ Add Remnant Piece to Bin</span>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block text-[#8b98ab] text-[11px] mb-1">Length (in)</label>
+                <input id="new-offcut-length" type="number" step="0.01" min="0.1" required placeholder="e.g. 14.5" class="w-full px-2 py-1 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+              </div>
+              <div>
+                <label class="block text-[#8b98ab] text-[11px] mb-1">Quantity</label>
+                <input id="new-offcut-qty" type="number" min="1" value="1" required class="w-full px-2 py-1 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+              </div>
+              <div>
+                <label class="block text-[#8b98ab] text-[11px] mb-1">Drop Bin / Note</label>
+                <input id="new-offcut-loc" type="text" placeholder="e.g. Bin A-1" class="w-full px-2 py-1 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] text-xs" />
+              </div>
+            </div>
+            <button type="submit" class="w-full py-1.5 btn-metal text-blue-300 font-bold rounded">
+              + Save Offcut Piece
+            </button>
+          </form>
+
+          <div class="space-y-2">
+            <span class="font-bold text-[#8b98ab] text-[11px] uppercase block">Available Remnants in Shop:</span>
+            <div id="offcuts-list-container" class="space-y-1.5 max-h-60 overflow-y-auto">
+              <!-- Dynamically populated offcuts -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Cut History -->
+    <div id="modal-history" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-4">
+      <div class="metal-panel rounded-md w-full max-w-3xl border border-[#3d4452] shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        <div class="px-5 py-3 border-b border-[#2d323b] flex items-center justify-between bg-[#16181d]">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <h2 class="text-sm font-bold text-white font-mono">Machine Shop Saw & Cut Activity Log</h2>
+          </div>
+          <button id="modal-history-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="p-5 space-y-3 text-xs font-mono">
+          <div class="overflow-x-auto max-h-96">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-[#14161a] text-[#8b98ab] border-b border-[#282d36] text-[10px] uppercase">
+                  <th class="py-2 px-2.5">Date & Time</th>
+                  <th class="py-2 px-2.5">Material Grade</th>
+                  <th class="py-2 px-2.5">Length Cut</th>
+                  <th class="py-2 px-2.5">Qty</th>
+                  <th class="py-2 px-2.5">Job #</th>
+                  <th class="py-2 px-2.5">Machinist</th>
+                  <th class="py-2 px-2.5">Remnant Offcut</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body" class="divide-y divide-[#282d36]">
+                <!-- Dynamically populated logs -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: Batch Actions Popup -->
+    <div id="modal-batch" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-4">
+      <div class="metal-panel rounded-md w-full max-w-md border border-[#3d4452] shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        <div class="px-5 py-3 border-b border-[#2d323b] flex items-center justify-between bg-[#16181d]">
+          <h2 id="modal-batch-title" class="text-sm font-bold text-white font-mono">Batch Action</h2>
+          <button id="modal-batch-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <form id="form-batch" class="p-5 space-y-3.5 text-xs font-mono">
+          <div id="batch-field-container">
+            <!-- Dynamically injected field -->
+          </div>
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#2d323b]">
+            <button type="button" id="modal-batch-cancel" class="btn-metal px-3.5 py-1.5 rounded font-medium">Cancel</button>
+            <button type="submit" class="btn-metal-blue px-4 py-1.5 rounded font-bold shadow-xs">Apply to Selected Items</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: Import CSV -->
+    <div id="modal-import" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-4">
+      <div class="metal-panel rounded-md w-full max-w-lg border border-[#3d4452] shadow-2xl overflow-hidden animate-in fade-in duration-150">
+        <div class="px-5 py-3 border-b border-[#2d323b] flex items-center justify-between bg-[#16181d]">
+          <h2 class="text-sm font-bold text-white font-mono">Import Machine Shop Inventory CSV</h2>
+          <button id="modal-import-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div class="p-5 space-y-3.5 text-xs font-mono">
+          <div>
+            <label class="block text-[11px] text-[#8b98ab] mb-1.5 uppercase">Upload CSV File:</label>
+            <input type="file" id="import-file-input" accept=".csv" class="w-full text-[#8b98ab] file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-mono file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer text-xs" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] text-[#8b98ab] mb-1 uppercase">Or Paste CSV Data:</label>
+            <textarea id="import-text-input" rows="6" placeholder="SKU,Name,Category,Grade/Size,Dimensions,Qty..." class="w-full p-2.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-[11px] focus:outline-none focus:border-blue-500"></textarea>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#2d323b]">
+            <button type="button" id="modal-import-cancel" class="btn-metal px-3.5 py-1.5 rounded font-medium">Cancel</button>
+            <button type="button" id="btn-do-import" class="btn-metal-blue px-4 py-1.5 rounded font-bold shadow-xs">Process CSV Import</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="no-print fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none font-mono"></div>
+
+    <!-- Vanilla TypeScript Application Logic -->
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
