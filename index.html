@@ -5,7 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Machine Shop Stock & Tooling Manager</title>
     <meta name="description" content="Manage machine shop bar stock, raw materials, tooling, end mills, machine parts, and cycle count inventory." />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <!-- Tailwind CSS CDN for pure static GitHub Pages runtime (Zero build step) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              metal: {
+                base: '#0f1113',
+                panel: '#16181d',
+                card: '#1c1f25',
+                border: '#2a2d31'
+              }
+            }
+          }
+        }
+      };
+    </script>
+    <!-- Standalone Machined Theme CSS -->
+    <link rel="stylesheet" href="./src/style.css" />
+    <!-- QR Code Generator and In-App Camera Scanner CDN scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   </head>
   <body class="bg-[#0b0d10] text-[#e2e8f0] min-h-screen flex flex-col font-sans selection:bg-blue-600 selection:text-white">
     
@@ -1065,7 +1089,7 @@
     <!-- Toast Notification Container -->
     <div id="toast-container" class="no-print fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none font-mono"></div>
 
-    <!-- Vanilla TypeScript Application Logic -->
-    <script type="module" src="/src/main.ts"></script>
+    <!-- Pure Vanilla JavaScript Application (Runs natively on GitHub Pages with 0 build steps) -->
+    <script src="./src/app.js"></script>
   </body>
 </html>
