@@ -133,16 +133,22 @@ export function renderAuditTable(
           </td>
 
           <td class="py-2.5 px-3 text-right">
-            ${
-              isVerified
-                ? `<button type="button" data-action="audit-verify" data-domain="${entry.domain}" data-id="${entry.id}" class="inline-flex items-center gap-1 px-2 py-1 rounded text-xs bg-emerald-950/60 text-emerald-300 border border-emerald-600/50 hover:bg-emerald-900/60">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span>Counted (${entry.lastCounted})</span>
-                  </button>`
-                : `<button type="button" data-action="audit-verify" data-domain="${entry.domain}" data-id="${entry.id}" class="btn-metal-blue px-2.5 py-1 rounded text-xs font-bold shadow-xs">
-                    Mark Verified
-                  </button>`
-            }
+            <div class="flex items-center justify-end gap-1.5">
+              <button type="button" data-action="qr-${entry.domain}" data-id="${entry.id}" class="btn-metal p-1 rounded text-amber-300 hover:text-white" title="Generate QR Tag">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
+              </button>
+
+              ${
+                isVerified
+                  ? `<button type="button" data-action="audit-verify" data-domain="${entry.domain}" data-id="${entry.id}" class="inline-flex items-center gap-1 px-2 py-1 rounded text-xs bg-emerald-950/60 text-emerald-300 border border-emerald-600/50 hover:bg-emerald-900/60">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>Counted (${entry.lastCounted})</span>
+                    </button>`
+                  : `<button type="button" data-action="audit-verify" data-domain="${entry.domain}" data-id="${entry.id}" class="btn-metal-blue px-2.5 py-1 rounded text-xs font-bold shadow-xs">
+                      Mark Verified
+                    </button>`
+              }
+            </div>
           </td>
         </tr>
       `;

@@ -108,7 +108,7 @@ export function renderMaterialsTable(
             <div class="text-[10px] text-[#64748b]">$${(item.costPerUnit || 0).toFixed(2)}/ea</div>
           </td>
 
-          <!-- Actions: Cut, Edit, and Working Delete -->
+          <!-- Actions: Cut, QR, Edit, and Working Delete -->
           <td class="py-2.5 px-3 text-right">
             <div class="flex items-center justify-end gap-1 font-mono">
               <button 
@@ -119,6 +119,16 @@ export function renderMaterialsTable(
                 title="Cut bar / Log Saw Drop"
               >
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg>
+              </button>
+
+              <button 
+                type="button" 
+                data-action="qr-material" 
+                data-id="${item.id}" 
+                class="btn-metal p-1.5 rounded text-amber-300 hover:text-white" 
+                title="Generate QR Asset Label & Mobile Scan"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
               </button>
               
               <button 
@@ -234,6 +244,9 @@ export function renderMaterialsCards(
             <div class="flex items-center gap-1">
               <button type="button" data-action="cut-material" data-id="${item.id}" class="btn-metal px-2 py-1 rounded text-xs text-blue-400 font-mono">
                 Cut Drop
+              </button>
+              <button type="button" data-action="qr-material" data-id="${item.id}" class="btn-metal p-1 rounded text-amber-300" title="QR Asset Tag">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
               </button>
               <button type="button" data-action="edit-material" data-id="${item.id}" class="btn-metal p-1 rounded text-slate-300" title="Edit">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>

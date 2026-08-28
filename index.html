@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Machine Shop Stock & Tooling Manager</title>
     <meta name="description" content="Manage machine shop bar stock, raw materials, tooling, end mills, machine parts, and cycle count inventory." />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="stylesheet" href="./src/index.css" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body class="bg-[#0b0d10] text-[#e2e8f0] min-h-screen flex flex-col font-sans selection:bg-blue-600 selection:text-white">
     
@@ -65,6 +64,11 @@
 
         <!-- Top Right Actions -->
         <div class="flex items-center gap-2 flex-wrap">
+          <button id="btn-header-scan-qr" class="btn-metal inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-mono font-medium text-amber-300 hover:text-white" title="Open Camera to Scan Inventory QR Tag">
+            <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect width="10" height="10" x="7" y="7" rx="1"/></svg>
+            <span>Scan QR</span>
+          </button>
+
           <button id="btn-quick-cut" class="btn-metal inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-mono font-medium">
             <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
             <span>Cut / Drop</span>
@@ -1062,6 +1066,6 @@
     <div id="toast-container" class="no-print fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none font-mono"></div>
 
     <!-- Vanilla TypeScript Application Logic -->
-    <script type="module" src="./src/main.ts"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

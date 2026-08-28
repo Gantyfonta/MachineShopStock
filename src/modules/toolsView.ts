@@ -95,6 +95,16 @@ export function renderToolsTable(
             <div class="flex items-center justify-end gap-1 font-mono">
               <button 
                 type="button" 
+                data-action="qr-tool" 
+                data-id="${tool.id}" 
+                class="btn-metal p-1.5 rounded text-amber-300 hover:text-white" 
+                title="Generate QR Asset Label & Mobile Scan"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
+              </button>
+
+              <button 
+                type="button" 
                 data-action="edit-tool" 
                 data-id="${tool.id}" 
                 class="btn-metal p-1.5 rounded text-slate-300 hover:text-white" 
@@ -200,6 +210,9 @@ export function renderToolsCards(
 
             <!-- Card Actions -->
             <div class="flex items-center gap-1">
+              <button type="button" data-action="qr-tool" data-id="${tool.id}" class="btn-metal p-1 rounded text-amber-300" title="QR Asset Tag">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
+              </button>
               <button type="button" data-action="edit-tool" data-id="${tool.id}" class="btn-metal p-1 rounded text-slate-300" title="Edit">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
               </button>

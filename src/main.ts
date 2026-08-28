@@ -31,6 +31,13 @@ import { renderMaterialsTable, renderMaterialsCards } from './modules/materialsV
 import { renderToolsTable, renderToolsCards } from './modules/toolsView';
 import { renderPartsTable, renderPartsCards } from './modules/partsView';
 import { renderAuditTable } from './modules/auditView';
+import {
+  openQrModal,
+  openScanDetailsModal,
+  openCameraScannerModal,
+  checkUrlForScanParam,
+  InventoryBundle
+} from './modules/qrCodeModule';
 
 // =============================================================
 // Application State
@@ -56,6 +63,15 @@ const filterState: FilterState = {
   sortOrder: 'desc'
 };
 
+// Helper to get fresh bundle of current items
+function getInventoryBundle(): InventoryBundle {
+  return {
+    stock: stockItems,
+    tools: toolItems,
+    parts: machinePartItems
+  };
+}
+
 // =============================================================
 // App Initialization
 // =============================================================
@@ -65,6 +81,15 @@ function initApp() {
   toolItems = loadTools();
   machinePartItems = loadMachineParts();
   cutLogs = loadCutLogs();
+
+  // Expose global bundle for modal interactions
+  (window as any).__inventoryBundle = getInventoryBundle();
+  (window as any).__onInventoryRefresh = () => {
+    saveStock(stockItems);
+    saveTools(toolItems);
+    saveMachineParts(machinePartItems);
+    renderApp();
+  };
 
   // 2. Initialize custom delete modal
   initDeleteModal();
@@ -80,6 +105,11 @@ function initApp() {
   updateCategoryChips();
   updateLocationDropdown();
   renderApp();
+
+  // 5. Check if page was loaded by scanning a phone QR code (e.g. ?item=stk-1 or #item=tool-1)
+  checkUrlForScanParam(getInventoryBundle(), () => {
+    renderApp();
+  });
 }
 
 // =============================================================
@@ -803,6 +833,23 @@ function setupGlobalActionDelegates() {
     }
     if (action === 'edit-part' && id) {
       openPartModal(id);
+      return;
+    }
+
+    // 4b. QR Code Generation & Mobile Asset Tag Modals
+    if (action === 'qr-material' && id) {
+      const item = stockItems.find((s) => s.id === id);
+      if (item) openQrModal(item, 'material');
+      return;
+    }
+    if (action === 'qr-tool' && id) {
+      const tool = toolItems.find((t) => t.id === id);
+      if (tool) openQrModal(tool, 'tool');
+      return;
+    }
+    if (action === 'qr-part' && id) {
+      const part = machinePartItems.find((p) => p.id === id);
+      if (part) openQrModal(part, 'part');
       return;
     }
 
@@ -1822,6 +1869,13 @@ function setupToolsMenu() {
 
   document.addEventListener('click', () => {
     moreMenu?.classList.add('hidden');
+  });
+
+  // Header Scan QR Button (Camera Live Scanner)
+  document.getElementById('btn-header-scan-qr')?.addEventListener('click', () => {
+    openCameraScannerModal(getInventoryBundle(), () => {
+      renderApp();
+    });
   });
 
   // Export Active Inventory CSV
