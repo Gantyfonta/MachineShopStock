@@ -12,13 +12,11 @@ const CUTS_STORAGE_KEY = 'machine_shop_cuts_log_v2';
 export function loadStock(): StockItem[] {
   try {
     const raw = localStorage.getItem(STOCK_STORAGE_KEY);
-    if (!raw) {
-      saveStock(INITIAL_STOCK);
-      return INITIAL_STOCK;
-    }
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed;
+    if (raw !== null) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
     }
     saveStock(INITIAL_STOCK);
     return INITIAL_STOCK;
@@ -42,13 +40,11 @@ export function saveStock(items: StockItem[]): void {
 export function loadTools(): ToolItem[] {
   try {
     const raw = localStorage.getItem(TOOLS_STORAGE_KEY);
-    if (!raw) {
-      saveTools(INITIAL_TOOLS);
-      return INITIAL_TOOLS;
-    }
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed;
+    if (raw !== null) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
     }
     saveTools(INITIAL_TOOLS);
     return INITIAL_TOOLS;
@@ -72,13 +68,11 @@ export function saveTools(tools: ToolItem[]): void {
 export function loadMachineParts(): MachinePartItem[] {
   try {
     const raw = localStorage.getItem(PARTS_STORAGE_KEY);
-    if (!raw) {
-      saveMachineParts(INITIAL_MACHINE_PARTS);
-      return INITIAL_MACHINE_PARTS;
-    }
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length > 0) {
-      return parsed;
+    if (raw !== null) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
     }
     saveMachineParts(INITIAL_MACHINE_PARTS);
     return INITIAL_MACHINE_PARTS;

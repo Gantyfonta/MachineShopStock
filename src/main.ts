@@ -71,11 +71,18 @@ function getInventoryBundle(): InventoryBundle {
   };
 }
 
+// Global persistence helper
+export function persistAllInventory() {
+  saveStock(stockItems);
+  saveTools(toolItems);
+  saveMachineParts(machinePartItems);
+}
+
 // =============================================================
 // App Initialization
 // =============================================================
 function initApp() {
-  // 1. Load initial data
+  // 1. Load saved inventory from browser localStorage
   stockItems = loadStock();
   toolItems = loadTools();
   machinePartItems = loadMachineParts();
@@ -84,11 +91,29 @@ function initApp() {
   // Expose global bundle for modal interactions
   (window as any).__inventoryBundle = getInventoryBundle();
   (window as any).__onInventoryRefresh = () => {
-    saveStock(stockItems);
-    saveTools(toolItems);
-    saveMachineParts(machinePartItems);
+    persistAllInventory();
     renderApp();
   };
+
+  // Ensure changes are always saved on page refresh / tab close
+  window.addEventListener('beforeunload', () => {
+    persistAllInventory();
+  });
+
+  // Keep inventory synchronized if modified in another tab
+  window.addEventListener('storage', (e) => {
+    if (
+      e.key === 'machine_shop_stock_data_v2' ||
+      e.key === 'machine_shop_tools_data_v2' ||
+      e.key === 'machine_shop_parts_data_v2'
+    ) {
+      stockItems = loadStock();
+      toolItems = loadTools();
+      machinePartItems = loadMachineParts();
+      (window as any).__inventoryBundle = getInventoryBundle();
+      renderApp();
+    }
+  });
 
   // 2. Initialize custom delete modal
   initDeleteModal();
@@ -523,17 +548,17 @@ function attachHoldToTickToButtons() {
 
 function handleQtyAction(action: string, id: string) {
   if (action === 'inc-material-qty' || action === 'inc-material') {
-    adjustStockQty(id, 1, false);
+    adjustStockQty(id, 1, true);
   } else if (action === 'dec-material-qty' || action === 'dec-material') {
-    adjustStockQty(id, -1, false);
+    adjustStockQty(id, -1, true);
   } else if (action === 'inc-tool-qty' || action === 'inc-tool') {
-    adjustToolQty(id, 1, false);
+    adjustToolQty(id, 1, true);
   } else if (action === 'dec-tool-qty' || action === 'dec-tool') {
-    adjustToolQty(id, -1, false);
+    adjustToolQty(id, -1, true);
   } else if (action === 'inc-part-qty' || action === 'inc-part') {
-    adjustPartQty(id, 1, false);
+    adjustPartQty(id, 1, true);
   } else if (action === 'dec-part-qty' || action === 'dec-part') {
-    adjustPartQty(id, -1, false);
+    adjustPartQty(id, -1, true);
   }
 }
 

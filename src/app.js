@@ -12568,13 +12568,11 @@
   function loadStock() {
     try {
       const raw = localStorage.getItem(STOCK_STORAGE_KEY);
-      if (!raw) {
-        saveStock(INITIAL_STOCK);
-        return INITIAL_STOCK;
-      }
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+      if (raw !== null) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
       }
       saveStock(INITIAL_STOCK);
       return INITIAL_STOCK;
@@ -12593,13 +12591,11 @@
   function loadTools() {
     try {
       const raw = localStorage.getItem(TOOLS_STORAGE_KEY);
-      if (!raw) {
-        saveTools(INITIAL_TOOLS);
-        return INITIAL_TOOLS;
-      }
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+      if (raw !== null) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
       }
       saveTools(INITIAL_TOOLS);
       return INITIAL_TOOLS;
@@ -12618,13 +12614,11 @@
   function loadMachineParts() {
     try {
       const raw = localStorage.getItem(PARTS_STORAGE_KEY);
-      if (!raw) {
-        saveMachineParts(INITIAL_MACHINE_PARTS);
-        return INITIAL_MACHINE_PARTS;
-      }
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+      if (raw !== null) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
       }
       saveMachineParts(INITIAL_MACHINE_PARTS);
       return INITIAL_MACHINE_PARTS;
@@ -14722,6 +14716,11 @@
       parts: machinePartItems
     };
   }
+  function persistAllInventory() {
+    saveStock(stockItems);
+    saveTools(toolItems);
+    saveMachineParts(machinePartItems);
+  }
   function initApp() {
     stockItems = loadStock();
     toolItems = loadTools();
@@ -14729,11 +14728,21 @@
     cutLogs = loadCutLogs();
     window.__inventoryBundle = getInventoryBundle();
     window.__onInventoryRefresh = () => {
-      saveStock(stockItems);
-      saveTools(toolItems);
-      saveMachineParts(machinePartItems);
+      persistAllInventory();
       renderApp();
     };
+    window.addEventListener("beforeunload", () => {
+      persistAllInventory();
+    });
+    window.addEventListener("storage", (e) => {
+      if (e.key === "machine_shop_stock_data_v2" || e.key === "machine_shop_tools_data_v2" || e.key === "machine_shop_parts_data_v2") {
+        stockItems = loadStock();
+        toolItems = loadTools();
+        machinePartItems = loadMachineParts();
+        window.__inventoryBundle = getInventoryBundle();
+        renderApp();
+      }
+    });
     initDeleteModal();
     setupTabNavigation();
     setupFilterListeners();
@@ -15078,17 +15087,17 @@
   }
   function handleQtyAction(action, id) {
     if (action === "inc-material-qty" || action === "inc-material") {
-      adjustStockQty(id, 1, false);
+      adjustStockQty(id, 1, true);
     } else if (action === "dec-material-qty" || action === "dec-material") {
-      adjustStockQty(id, -1, false);
+      adjustStockQty(id, -1, true);
     } else if (action === "inc-tool-qty" || action === "inc-tool") {
-      adjustToolQty(id, 1, false);
+      adjustToolQty(id, 1, true);
     } else if (action === "dec-tool-qty" || action === "dec-tool") {
-      adjustToolQty(id, -1, false);
+      adjustToolQty(id, -1, true);
     } else if (action === "inc-part-qty" || action === "inc-part") {
-      adjustPartQty(id, 1, false);
+      adjustPartQty(id, 1, true);
     } else if (action === "dec-part-qty" || action === "dec-part") {
-      adjustPartQty(id, -1, false);
+      adjustPartQty(id, -1, true);
     }
   }
   function adjustStockQty(id, delta, autoSave = true) {
