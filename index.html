@@ -175,21 +175,43 @@
               <svg class="w-3.5 h-3.5 text-[#94a3b8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
               <span>Tools</span>
             </button>
-            <div id="menu-more-options" class="hidden absolute right-0 mt-1.5 w-56 rounded-md metal-panel border border-[#3d4452] shadow-2xl z-50 py-1 text-xs font-mono">
-              <button id="btn-export-csv" class="w-full text-left px-3.5 py-2 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
-                <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Export Active Inventory CSV
+            <div id="menu-more-options" class="hidden absolute right-0 mt-1.5 w-64 rounded-md metal-panel border border-[#3d4452] shadow-2xl z-50 py-1 text-xs font-mono">
+              <div class="px-3 py-1 text-[10px] uppercase font-bold text-blue-400 tracking-wider border-b border-[#2d323b] mb-1 flex items-center justify-between">
+                <span>Code Transfer & Sync</span>
+                <span class="text-[9px] px-1 py-0.2 bg-blue-950/80 text-blue-300 rounded border border-blue-800/40">EASY</span>
+              </div>
+              <button id="btn-export-code" class="w-full text-left px-3.5 py-2 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <div>
+                  <div class="font-bold">Export Stock & Tools Code</div>
+                  <div class="text-[10px] text-[#717d91]">Generate portable transfer code</div>
+                </div>
               </button>
-              <button id="btn-import-csv" class="w-full text-left px-3.5 py-2 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
-                <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                Import Inventory CSV
+              <button id="btn-import-code" class="w-full text-left px-3.5 py-2 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <div>
+                  <div class="font-bold">Import Stock & Tools Code</div>
+                  <div class="text-[10px] text-[#717d91]">Paste code to restore or load</div>
+                </div>
               </button>
-              <button id="btn-print-labels" class="w-full text-left px-3.5 py-2 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
+
+              <div class="h-px bg-[#333842] my-1"></div>
+              <div class="px-3 py-1 text-[10px] uppercase font-bold text-[#8b98ab] tracking-wider mb-0.5">Files & Print</div>
+
+              <button id="btn-export-csv" class="w-full text-left px-3.5 py-1.5 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export Active CSV
+              </button>
+              <button id="btn-import-csv" class="w-full text-left px-3.5 py-1.5 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Import CSV File
+              </button>
+              <button id="btn-print-labels" class="w-full text-left px-3.5 py-1.5 hover:bg-[#282e39] text-[#e2e8f0] flex items-center gap-2">
                 <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
                 Print Bin & Stock Labels
               </button>
               <div class="h-px bg-[#333842] my-1"></div>
-              <button id="btn-reset-demo" class="w-full text-left px-3.5 py-2 hover:bg-rose-950/50 text-rose-400 flex items-center gap-2">
+              <button id="btn-reset-demo" class="w-full text-left px-3.5 py-1.5 hover:bg-rose-950/50 text-rose-400 flex items-center gap-2">
                 <svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>
                 Reset Demo Stock & Tools
               </button>
@@ -380,9 +402,13 @@
             <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
             Set Status
           </button>
+          <button id="batch-btn-export-code" class="btn-metal inline-flex items-center gap-1 px-2.5 py-1 rounded text-cyan-300 font-bold" title="Generate export code for selected items">
+            <svg class="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Export Code
+          </button>
           <button id="batch-btn-export" class="btn-metal inline-flex items-center gap-1 px-2.5 py-1 rounded">
             <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Export Selected
+            Export CSV
           </button>
           <button id="batch-btn-delete" class="btn-metal-danger inline-flex items-center gap-1 px-2.5 py-1 rounded font-bold">
             <svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
@@ -1112,6 +1138,163 @@
             <button type="submit" class="btn-metal-blue px-4 py-1.5 rounded font-bold shadow-xs">Apply to Selected Items</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- MODAL: Code Transfer (Export & Import Stock / Tools via Code) -->
+    <div id="modal-code-transfer" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/85 flex items-center justify-center p-3 sm:p-4">
+      <div class="metal-panel rounded-md w-full max-w-2xl border border-[#3d4452] shadow-2xl overflow-hidden animate-in fade-in duration-150 flex flex-col max-h-[90vh]">
+        
+        <!-- Header -->
+        <div class="px-5 py-3 border-b border-[#2d323b] flex items-center justify-between bg-[#16181d] shrink-0">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded bg-cyan-600/30 text-cyan-300 border border-cyan-500/40 flex items-center justify-center font-bold font-mono">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-white font-mono">Stock & Tooling Code Transfer</h2>
+              <p class="text-[10px] text-[#8b98ab] font-mono">Easily copy, backup, share, or import inventory using portable codes</p>
+            </div>
+          </div>
+          <button id="modal-code-transfer-close" class="text-[#8b98ab] hover:text-white p-1 rounded hover:bg-[#282e39]">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <!-- Transfer Mode Tabs -->
+        <div class="flex border-b border-[#282d36] bg-[#121418] px-4 pt-2 gap-2 text-xs font-mono shrink-0">
+          <button id="tab-btn-code-export" class="px-4 py-2 font-bold text-cyan-300 border-b-2 border-cyan-400 flex items-center gap-1.5 transition-colors">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export Stock Code</span>
+          </button>
+          <button id="tab-btn-code-import" class="px-4 py-2 text-[#8b98ab] hover:text-white flex items-center gap-1.5 transition-colors">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Import Stock Code</span>
+          </button>
+        </div>
+
+        <!-- Modal Body (Scrollable) -->
+        <div class="p-5 space-y-4 text-xs font-mono overflow-y-auto flex-1">
+          
+          <!-- PANEL 1: EXPORT CODE -->
+          <div id="panel-code-export" class="space-y-3.5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div class="flex-1">
+                <label for="code-export-scope" class="block text-[11px] text-[#8b98ab] mb-1 uppercase font-bold">What would you like to export?</label>
+                <select id="code-export-scope" class="w-full px-2.5 py-1.5 bg-[#0f1216] border border-[#2d323b] rounded text-[#e2e8f0] focus:border-cyan-500 text-xs font-mono">
+                  <option value="all">📦 All Shop Inventory (Stock, Tools & Parts)</option>
+                  <option value="tools-with-codes" selected>⚙️ Cutting Tools with Codes / SKUs (Tool Crib)</option>
+                  <option value="tools">🔧 All Cutting Tools & End Mills</option>
+                  <option value="materials">🔩 Raw Bar Stock & Tubing Materials</option>
+                  <option value="parts">🛡️ Machine Spare Parts & Maintenance</option>
+                </select>
+              </div>
+
+              <div id="code-export-stats-badge" class="sm:self-end px-3 py-1.5 bg-[#121519] border border-[#282d36] rounded text-[11px] text-[#cbd5e1] flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                <span id="code-export-stats-text">12 Tools with codes ready</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="text-[11px] text-[#8b98ab] uppercase font-bold">Generated Portable Stock Code:</label>
+                <span class="text-[10px] text-[#64748b]">Click 'Copy Code' or select text</span>
+              </div>
+              <div class="relative">
+                <textarea id="code-export-textarea" rows="8" readonly class="w-full p-3 bg-[#0a0c0e] border border-[#2d323b] rounded text-cyan-300 font-mono text-[11px] focus:outline-none focus:border-cyan-500 selection:bg-cyan-950 selection:text-white leading-relaxed resize-y"></textarea>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#282d36]">
+              <button type="button" id="btn-select-all-export-code" class="btn-metal px-3 py-1.5 rounded text-[11px]">
+                Select All Code
+              </button>
+
+              <div class="flex items-center gap-2">
+                <button type="button" id="btn-download-export-code" class="btn-metal px-3 py-1.5 rounded font-medium flex items-center gap-1.5 text-xs text-[#cbd5e1] hover:text-white">
+                  <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Download File (.json)</span>
+                </button>
+
+                <button type="button" id="btn-copy-export-code" class="btn-metal-blue px-4 py-1.5 rounded font-bold shadow-xs flex items-center gap-1.5 text-xs text-white">
+                  <svg id="icon-copy-code" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  <span id="text-copy-code">Copy Code to Clipboard</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- PANEL 2: IMPORT CODE -->
+          <div id="panel-code-import" class="hidden space-y-3.5">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <label for="code-import-textarea" class="block text-[11px] text-[#8b98ab] uppercase font-bold">Paste Exported Stock Code or JSON:</label>
+              
+              <div class="flex items-center gap-2">
+                <label class="btn-metal px-2.5 py-1 rounded text-[11px] cursor-pointer flex items-center gap-1.5 text-[#cbd5e1] hover:text-white">
+                  <svg class="w-3 h-3 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>Upload .json/.txt File</span>
+                  <input type="file" id="code-import-file" accept=".json,.txt" class="hidden" />
+                </label>
+                <button type="button" id="btn-paste-clipboard" class="btn-metal px-2.5 py-1 rounded text-[11px] text-[#cbd5e1] hover:text-white">
+                  Paste from Clipboard
+                </button>
+              </div>
+            </div>
+
+            <textarea id="code-import-textarea" rows="7" placeholder="Paste your exported code snippet or JSON payload here..." class="w-full p-3 bg-[#0a0c0e] border border-[#2d323b] rounded text-[#e2e8f0] font-mono text-[11px] focus:outline-none focus:border-emerald-500 leading-relaxed resize-y"></textarea>
+
+            <!-- Real-time Live Code Inspector & Validation Status -->
+            <div id="code-import-inspector" class="p-3 metal-panel-dense rounded space-y-2 border border-[#282d36]">
+              <div class="flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2 font-bold text-[#8b98ab]">
+                  <span id="inspector-status-dot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+                  <span id="inspector-status-title">Awaiting Code Input</span>
+                </div>
+                <span id="inspector-status-count" class="text-[11px] text-[#64748b]">0 items</span>
+              </div>
+              <div id="inspector-preview-pills" class="flex flex-wrap gap-1.5 text-[10px]">
+                <span class="text-[#64748b]">Paste code above to see instant preview of tools and stock to be imported.</span>
+              </div>
+            </div>
+
+            <!-- Import Strategy Mode -->
+            <div class="p-3 bg-[#101317] border border-[#282d36] rounded space-y-2">
+              <label class="block text-[11px] text-[#8b98ab] uppercase font-bold">Import Strategy:</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <label class="flex items-start gap-2 p-2 rounded bg-[#161a22] border border-[#2d3442] cursor-pointer hover:border-emerald-600/60">
+                  <input type="radio" name="code-import-strategy" value="merge" checked class="mt-0.5 text-emerald-500 bg-[#0f1216] border-[#2d323b]" />
+                  <div>
+                    <div class="font-bold text-white">Merge & Update (Safe)</div>
+                    <div class="text-[10px] text-[#717d91]">Keeps current items, updates matching codes/SKUs, adds new items.</div>
+                  </div>
+                </label>
+                <label class="flex items-start gap-2 p-2 rounded bg-[#161a22] border border-[#2d3442] cursor-pointer hover:border-rose-600/60">
+                  <input type="radio" name="code-import-strategy" value="replace" class="mt-0.5 text-rose-500 bg-[#0f1216] border-[#2d323b]" />
+                  <div>
+                    <div class="font-bold text-rose-400">Replace Current Stock</div>
+                    <div class="text-[10px] text-[#717d91]">Overwrites current inventory with the imported code dataset.</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-[#282d36]">
+              <button type="button" id="btn-clear-code-import" class="btn-metal px-3 py-1.5 rounded text-[11px] text-[#8b98ab] hover:text-white">
+                Clear
+              </button>
+              
+              <div class="flex items-center gap-2">
+                <button type="button" id="modal-code-transfer-cancel" class="btn-metal px-3.5 py-1.5 rounded font-medium">Cancel</button>
+                <button type="button" id="btn-do-code-import" class="btn-metal-blue px-4 py-1.5 rounded font-bold shadow-xs text-emerald-300 hover:text-white flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Apply & Load Inventory Code</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
 

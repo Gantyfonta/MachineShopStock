@@ -13305,8 +13305,16 @@
               </span>
               <span class="font-bold text-white tracking-tight">${tool.name}</span>
             </div>
-            <div class="flex items-center gap-2 text-[11px] text-[#717d91] font-mono mt-0.5">
-              <span>SKU: <strong class="text-[#cbd5e1]">${tool.sku || "N/A"}</strong></span>
+            <div class="flex items-center gap-2 text-[11px] text-[#717d91] font-mono mt-0.5 flex-wrap">
+              <span class="inline-flex items-center gap-1">
+                <span>SKU/Code:</span>
+                <strong class="text-[#cbd5e1] font-bold">${tool.sku || "N/A"}</strong>
+                ${tool.sku ? `
+                  <button type="button" data-action="copy-tool-sku" data-id="${tool.id}" class="text-cyan-400 hover:text-cyan-200 p-0.5 rounded hover:bg-cyan-950/50 inline-flex items-center" title="Copy Tool Code">
+                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  </button>
+                ` : ""}
+              </span>
               ${tool.sizeDiameter ? `<span>\u2022 Size: <strong class="text-amber-300">${tool.sizeDiameter}</strong></span>` : ""}
               ${tool.flutes ? `<span>\u2022 Geom: <strong class="text-slate-300">${tool.flutes}</strong></span>` : ""}
               ${tool.coating ? `<span>\u2022 Coat: <strong class="text-cyan-300">${tool.coating}</strong></span>` : ""}
@@ -13372,6 +13380,16 @@
             <div class="flex items-center justify-end gap-1 font-mono">
               <button 
                 type="button" 
+                data-action="export-single-tool-code" 
+                data-id="${tool.id}" 
+                class="btn-metal p-1.5 rounded text-cyan-300 hover:text-white" 
+                title="Export Tool Code / JSON"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </button>
+
+              <button 
+                type="button" 
                 data-action="qr-tool" 
                 data-id="${tool.id}" 
                 class="btn-metal p-1.5 rounded text-amber-300 hover:text-white" 
@@ -13424,8 +13442,17 @@
                   </span>
                   <span class="font-bold text-white text-xs">${tool.name}</span>
                 </div>
-                <div class="text-[11px] text-[#717d91] font-mono mt-0.5">
-                  <span>Size: <strong class="text-amber-300">${tool.sizeDiameter}</strong></span>
+                <div class="text-[11px] text-[#717d91] font-mono mt-0.5 flex-wrap flex items-center gap-1.5">
+                  <span class="inline-flex items-center gap-1">
+                    <span>Code:</span>
+                    <strong class="text-[#cbd5e1]">${tool.sku || "N/A"}</strong>
+                    ${tool.sku ? `
+                      <button type="button" data-action="copy-tool-sku" data-id="${tool.id}" class="text-cyan-400 hover:text-cyan-200 p-0.5" title="Copy Tool Code">
+                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                      </button>
+                    ` : ""}
+                  </span>
+                  <span>\u2022 Size: <strong class="text-amber-300">${tool.sizeDiameter}</strong></span>
                   ${tool.coating ? ` \u2022 Coat: <strong class="text-cyan-300">${tool.coating}</strong>` : ""}
                 </div>
               </div>
@@ -13480,6 +13507,9 @@
 
             <!-- Card Actions -->
             <div class="flex items-center gap-1">
+              <button type="button" data-action="export-single-tool-code" data-id="${tool.id}" class="btn-metal p-1 rounded text-cyan-300 hover:text-white" title="Export Tool Code / JSON">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </button>
               <button type="button" data-action="qr-tool" data-id="${tool.id}" class="btn-metal p-1 rounded text-amber-300" title="QR Asset Tag">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
               </button>
@@ -14690,6 +14720,266 @@
     document.body.appendChild(modalDiv);
   }
 
+  // src/modules/codeTransfer.ts
+  function generateInventoryCode(scope, stockItems2, toolItems2, machinePartItems2, selectedIds2) {
+    let filteredStock = [];
+    let filteredTools = [];
+    let filteredParts = [];
+    if (selectedIds2 && selectedIds2.size > 0) {
+      filteredStock = stockItems2.filter((s) => selectedIds2.has(s.id));
+      filteredTools = toolItems2.filter((t) => selectedIds2.has(t.id));
+      filteredParts = machinePartItems2.filter((p) => selectedIds2.has(p.id));
+    } else {
+      if (scope === "all") {
+        filteredStock = stockItems2;
+        filteredTools = toolItems2;
+        filteredParts = machinePartItems2;
+      } else if (scope === "tools" || scope === "tools-with-codes") {
+        filteredTools = scope === "tools-with-codes" ? toolItems2.filter((t) => t.sku && t.sku.trim().length > 0 || t.id && t.id.trim().length > 0) : toolItems2;
+      } else if (scope === "materials") {
+        filteredStock = stockItems2;
+      } else if (scope === "parts") {
+        filteredParts = machinePartItems2;
+      }
+    }
+    const payload = {
+      format: "MACHINE_SHOP_INVENTORY_CODE_V2",
+      version: "2.0",
+      exportedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      scope,
+      summary: {
+        stockCount: filteredStock.length,
+        toolsCount: filteredTools.length,
+        partsCount: filteredParts.length,
+        totalItems: filteredStock.length + filteredTools.length + filteredParts.length
+      },
+      ...filteredStock.length > 0 ? { stock: filteredStock } : {},
+      ...filteredTools.length > 0 ? { tools: filteredTools } : {},
+      ...filteredParts.length > 0 ? { parts: filteredParts } : {}
+    };
+    return JSON.stringify(payload, null, 2);
+  }
+  function parseAndValidateCode(rawText) {
+    const trimmed = rawText.trim();
+    if (!trimmed) {
+      return {
+        isValid: false,
+        error: "Code input is empty.",
+        counts: { stock: 0, tools: 0, parts: 0, total: 0 },
+        data: { stock: [], tools: [], parts: [] },
+        previewNames: []
+      };
+    }
+    let cleanJson = trimmed;
+    if (cleanJson.startsWith("```")) {
+      cleanJson = cleanJson.replace(/^```[a-zA-Z]*\n?/, "").replace(/```$/, "").trim();
+    }
+    try {
+      const parsed = JSON.parse(cleanJson);
+      const stock = [];
+      const tools = [];
+      const parts = [];
+      const previewNames = [];
+      if (parsed && typeof parsed === "object") {
+        if (Array.isArray(parsed.stock)) {
+          parsed.stock.forEach((item) => {
+            if (item && (item.name || item.sku || item.alloyGrade)) {
+              stock.push(item);
+              if (previewNames.length < 5) previewNames.push(item.name || item.sku);
+            }
+          });
+        }
+        if (Array.isArray(parsed.tools)) {
+          parsed.tools.forEach((item) => {
+            if (item && (item.name || item.sku || item.toolType)) {
+              tools.push(item);
+              if (previewNames.length < 5) previewNames.push(item.name || item.sku);
+            }
+          });
+        }
+        if (Array.isArray(parsed.parts)) {
+          parsed.parts.forEach((item) => {
+            if (item && (item.name || item.partNumber || item.machineName)) {
+              parts.push(item);
+              if (previewNames.length < 5) previewNames.push(item.name || item.partNumber);
+            }
+          });
+        }
+        if (Array.isArray(parsed)) {
+          parsed.forEach((item) => {
+            if (!item) return;
+            if (item.flutes !== void 0 || item.toolType !== void 0 || item.condition !== void 0) {
+              tools.push(item);
+              if (previewNames.length < 5) previewNames.push(item.name || item.sku);
+            } else if (item.machineName !== void 0 || item.partNumber !== void 0 || item.criticality !== void 0) {
+              parts.push(item);
+              if (previewNames.length < 5) previewNames.push(item.name || item.partNumber);
+            } else if (item.alloyGrade !== void 0 || item.shape !== void 0 || item.fullStockQty !== void 0) {
+              stock.push(item);
+              if (previewNames.length < 5) previewNames.push(item.name || item.sku);
+            } else if (item.name || item.sku) {
+              tools.push(item);
+              if (previewNames.length < 5) previewNames.push(item.name || item.sku);
+            }
+          });
+        }
+        if (!Array.isArray(parsed) && !parsed.stock && !parsed.tools && !parsed.parts) {
+          if (parsed.name || parsed.sku || parsed.partNumber) {
+            if (parsed.flutes !== void 0 || parsed.toolType !== void 0) {
+              tools.push(parsed);
+            } else if (parsed.machineName !== void 0 || parsed.partNumber !== void 0) {
+              parts.push(parsed);
+            } else {
+              stock.push(parsed);
+            }
+            previewNames.push(parsed.name || parsed.sku || parsed.partNumber);
+          }
+        }
+      }
+      const total = stock.length + tools.length + parts.length;
+      if (total === 0) {
+        return {
+          isValid: false,
+          error: "No valid stock, tooling, or parts entries found in code.",
+          counts: { stock: 0, tools: 0, parts: 0, total: 0 },
+          data: { stock: [], tools: [], parts: [] },
+          previewNames: []
+        };
+      }
+      return {
+        isValid: true,
+        counts: {
+          stock: stock.length,
+          tools: tools.length,
+          parts: parts.length,
+          total
+        },
+        data: {
+          stock,
+          tools,
+          parts
+        },
+        previewNames
+      };
+    } catch (err) {
+      return {
+        isValid: false,
+        error: `Invalid JSON syntax: ${err?.message || "Check for missing brackets or commas."}`,
+        counts: { stock: 0, tools: 0, parts: 0, total: 0 },
+        data: { stock: [], tools: [], parts: [] },
+        previewNames: []
+      };
+    }
+  }
+  function applyImportedInventory(mode, importedData, currentStock, currentTools, currentParts) {
+    let updatedStock = [...currentStock];
+    let updatedTools = [...currentTools];
+    let updatedParts = [...currentParts];
+    let addedCount = 0;
+    let updatedCount = 0;
+    let replacedCount = 0;
+    if (mode === "replace") {
+      if (importedData.stock.length > 0) {
+        updatedStock = importedData.stock;
+        replacedCount += importedData.stock.length;
+      }
+      if (importedData.tools.length > 0) {
+        updatedTools = importedData.tools;
+        replacedCount += importedData.tools.length;
+      }
+      if (importedData.parts.length > 0) {
+        updatedParts = importedData.parts;
+        replacedCount += importedData.parts.length;
+      }
+    } else {
+      importedData.stock.forEach((item) => {
+        const idx = updatedStock.findIndex(
+          (s) => s.id && item.id && s.id === item.id || s.sku && item.sku && s.sku.toLowerCase() === item.sku.toLowerCase()
+        );
+        if (idx >= 0) {
+          updatedStock[idx] = { ...updatedStock[idx], ...item, lastUpdated: (/* @__PURE__ */ new Date()).toISOString().split("T")[0] };
+          updatedCount++;
+        } else {
+          const newItem = {
+            ...item,
+            id: item.id || `stk-${Date.now()}-${Math.floor(Math.random() * 1e3)}`,
+            lastUpdated: (/* @__PURE__ */ new Date()).toISOString().split("T")[0]
+          };
+          updatedStock.push(newItem);
+          addedCount++;
+        }
+      });
+      importedData.tools.forEach((item) => {
+        const idx = updatedTools.findIndex(
+          (t) => t.id && item.id && t.id === item.id || t.sku && item.sku && t.sku.toLowerCase() === item.sku.toLowerCase()
+        );
+        if (idx >= 0) {
+          updatedTools[idx] = { ...updatedTools[idx], ...item, lastUpdated: (/* @__PURE__ */ new Date()).toISOString().split("T")[0] };
+          updatedCount++;
+        } else {
+          const newTool = {
+            ...item,
+            id: item.id || `tool-${Date.now()}-${Math.floor(Math.random() * 1e3)}`,
+            lastUpdated: (/* @__PURE__ */ new Date()).toISOString().split("T")[0]
+          };
+          updatedTools.push(newTool);
+          addedCount++;
+        }
+      });
+      importedData.parts.forEach((item) => {
+        const idx = updatedParts.findIndex(
+          (p) => p.id && item.id && p.id === item.id || p.partNumber && item.partNumber && p.partNumber.toLowerCase() === item.partNumber.toLowerCase()
+        );
+        if (idx >= 0) {
+          updatedParts[idx] = { ...updatedParts[idx], ...item, lastUpdated: (/* @__PURE__ */ new Date()).toISOString().split("T")[0] };
+          updatedCount++;
+        } else {
+          const newPart = {
+            ...item,
+            id: item.id || `part-${Date.now()}-${Math.floor(Math.random() * 1e3)}`,
+            lastUpdated: (/* @__PURE__ */ new Date()).toISOString().split("T")[0]
+          };
+          updatedParts.push(newPart);
+          addedCount++;
+        }
+      });
+    }
+    saveStock(updatedStock);
+    saveTools(updatedTools);
+    saveMachineParts(updatedParts);
+    return {
+      stock: updatedStock,
+      tools: updatedTools,
+      parts: updatedParts,
+      stats: {
+        added: addedCount,
+        updated: updatedCount,
+        replaced: replacedCount
+      }
+    };
+  }
+  async function copyCodeToClipboard(text) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.opacity = "0";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const successful = document.execCommand("copy");
+      document.body.removeChild(textArea);
+      return successful;
+    } catch (e) {
+      console.error("Failed to copy to clipboard", e);
+      return false;
+    }
+  }
+
   // src/main.ts
   var stockItems = [];
   var toolItems = [];
@@ -14750,6 +15040,7 @@
     setupModalForms();
     setupToolsMenu();
     setupThemeSwitcher();
+    setupCodeTransferSystem();
     updateCategoryChips();
     updateLocationDropdown();
     renderApp();
@@ -15354,6 +15645,23 @@
         if (part) openQrModal(part, "part");
         return;
       }
+      if (action === "export-single-tool-code" && id) {
+        openCodeTransferModal("export", "tools", id);
+        return;
+      }
+      if (action === "copy-tool-sku" && id) {
+        const tool = toolItems.find((t) => t.id === id);
+        if (tool && tool.sku) {
+          copyCodeToClipboard(tool.sku).then((ok) => {
+            if (ok) {
+              showToast(`Copied tool code: ${tool.sku}`, "success");
+            } else {
+              showToast(`Tool code: ${tool.sku}`, "info");
+            }
+          });
+        }
+        return;
+      }
       if (action === "cut-material" && id) {
         openCutModal(id);
         return;
@@ -15506,6 +15814,9 @@ Generated: ${(/* @__PURE__ */ new Date()).toLocaleString()}
     });
     document.getElementById("batch-btn-set-status")?.addEventListener("click", () => {
       openBatchModal("set-status");
+    });
+    document.getElementById("batch-btn-export-code")?.addEventListener("click", () => {
+      openCodeTransferModal("export", "all");
     });
     document.getElementById("batch-btn-export")?.addEventListener("click", () => {
       if (activeTab === "materials") {
@@ -16233,6 +16544,12 @@ Generated: ${(/* @__PURE__ */ new Date()).toLocaleString()}
         renderApp();
       });
     });
+    document.getElementById("btn-export-code")?.addEventListener("click", () => {
+      openCodeTransferModal("export", activeTab === "tools" ? "tools-with-codes" : "all");
+    });
+    document.getElementById("btn-import-code")?.addEventListener("click", () => {
+      openCodeTransferModal("import");
+    });
     document.getElementById("btn-export-csv")?.addEventListener("click", () => {
       if (activeTab === "materials") {
         downloadFile(exportStockToCSV(stockItems), `machine_shop_materials_${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.csv`, "text/csv");
@@ -16439,6 +16756,276 @@ Generated: ${(/* @__PURE__ */ new Date()).toLocaleString()}
     else saveStock(stockItems);
     showToast(`Successfully imported ${importedCount} items`, "success");
     renderApp();
+  }
+  var activeCodeTransferScope = "tools-with-codes";
+  var activeSingleExportToolId = null;
+  function openCodeTransferModal(initialTab = "export", scope = "tools-with-codes", singleToolId) {
+    const modal = document.getElementById("modal-code-transfer");
+    if (!modal) return;
+    activeCodeTransferScope = scope;
+    activeSingleExportToolId = singleToolId || null;
+    const scopeSelect = document.getElementById("code-export-scope");
+    if (scopeSelect) {
+      scopeSelect.value = scope;
+    }
+    switchCodeTransferTab(initialTab);
+    if (initialTab === "export") {
+      refreshExportCodeView();
+    } else {
+      validateAndInspectImport();
+    }
+    modal.classList.remove("hidden");
+  }
+  function switchCodeTransferTab(tab) {
+    const exportTabBtn = document.getElementById("tab-btn-code-export");
+    const importTabBtn = document.getElementById("tab-btn-code-import");
+    const exportPanel = document.getElementById("panel-code-export");
+    const importPanel = document.getElementById("panel-code-import");
+    if (tab === "export") {
+      exportTabBtn?.classList.add("active", "border-amber-400", "text-amber-400", "bg-[#181c23]");
+      exportTabBtn?.classList.remove("border-transparent", "text-slate-400");
+      importTabBtn?.classList.remove("active", "border-amber-400", "text-amber-400", "bg-[#181c23]");
+      importTabBtn?.classList.add("border-transparent", "text-slate-400");
+      exportPanel?.classList.remove("hidden");
+      importPanel?.classList.add("hidden");
+      refreshExportCodeView();
+    } else {
+      importTabBtn?.classList.add("active", "border-amber-400", "text-amber-400", "bg-[#181c23]");
+      importTabBtn?.classList.remove("border-transparent", "text-slate-400");
+      exportTabBtn?.classList.remove("active", "border-amber-400", "text-amber-400", "bg-[#181c23]");
+      exportTabBtn?.classList.add("border-transparent", "text-slate-400");
+      importPanel?.classList.remove("hidden");
+      exportPanel?.classList.add("hidden");
+      validateAndInspectImport();
+    }
+  }
+  function refreshExportCodeView() {
+    const textarea = document.getElementById("code-export-textarea");
+    const statsBadge = document.getElementById("code-export-stats-text");
+    if (!textarea) return;
+    let selectedSet;
+    if (activeSingleExportToolId) {
+      selectedSet = /* @__PURE__ */ new Set([activeSingleExportToolId]);
+    } else if (selectedIds.size > 0) {
+      selectedSet = selectedIds;
+    }
+    const jsonCode = generateInventoryCode(
+      activeCodeTransferScope,
+      stockItems,
+      toolItems,
+      machinePartItems,
+      selectedSet
+    );
+    textarea.value = jsonCode;
+    if (statsBadge) {
+      const parts = [];
+      if (activeCodeTransferScope === "tools-with-codes" || activeCodeTransferScope === "tools") {
+        const toolCount = selectedSet ? toolItems.filter((t) => selectedSet.has(t.id)).length : toolItems.filter((t) => activeCodeTransferScope === "tools" || t.sku && t.sku.trim().length > 0).length;
+        parts.push(`${toolCount} Tools with SKU Code`);
+      } else if (activeCodeTransferScope === "materials") {
+        const matCount = selectedSet ? stockItems.filter((s) => selectedSet.has(s.id)).length : stockItems.length;
+        parts.push(`${matCount} Raw Materials`);
+      } else if (activeCodeTransferScope === "parts") {
+        const partCount = selectedSet ? machinePartItems.filter((p) => selectedSet.has(p.id)).length : machinePartItems.length;
+        parts.push(`${partCount} Machine Parts`);
+      } else {
+        const total = (selectedSet ? stockItems.filter((s) => selectedSet.has(s.id)).length : stockItems.length) + (selectedSet ? toolItems.filter((t) => selectedSet.has(t.id)).length : toolItems.length) + (selectedSet ? machinePartItems.filter((p) => selectedSet.has(p.id)).length : machinePartItems.length);
+        parts.push(`${total} Total Inventory Items`);
+      }
+      statsBadge.textContent = `${parts.join(", ")} \u2022 JSON Code Ready`;
+    }
+  }
+  function validateAndInspectImport() {
+    const textarea = document.getElementById("code-import-textarea");
+    const statusDot = document.getElementById("inspector-status-dot");
+    const statusTitle = document.getElementById("inspector-status-title");
+    const statusCount = document.getElementById("inspector-status-count");
+    const previewPills = document.getElementById("inspector-preview-pills");
+    const doImportBtn = document.getElementById("btn-do-code-import");
+    if (!textarea || !statusDot || !statusTitle || !statusCount || !previewPills) return;
+    const raw = textarea.value.trim();
+    if (!raw) {
+      statusDot.className = "w-2 h-2 rounded-full bg-slate-500";
+      statusTitle.textContent = "Awaiting Code Input";
+      statusCount.textContent = "Paste or drop JSON code";
+      previewPills.innerHTML = '<span class="text-[#556070] italic">No payload detected</span>';
+      if (doImportBtn) doImportBtn.disabled = true;
+      return;
+    }
+    const result = parseAndValidateCode(raw);
+    if (result.isValid) {
+      statusDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+      statusTitle.textContent = `Valid Inventory Code`;
+      const countParts = [];
+      if (result.counts.tools > 0) countParts.push(`${result.counts.tools} Tools`);
+      if (result.counts.stock > 0) countParts.push(`${result.counts.stock} Materials`);
+      if (result.counts.parts > 0) countParts.push(`${result.counts.parts} Machine Parts`);
+      if (countParts.length === 0) countParts.push("Empty dataset");
+      statusCount.textContent = countParts.join(" \u2022 ");
+      const sampleItems = [];
+      (result.data.tools || []).slice(0, 4).forEach((t) => {
+        sampleItems.push({ label: t.name, code: t.sku || "TOOL", type: "Tool" });
+      });
+      (result.data.stock || []).slice(0, 2).forEach((m) => {
+        sampleItems.push({ label: m.name, code: m.sku || m.alloyGrade || "MAT", type: "Material" });
+      });
+      (result.data.parts || []).slice(0, 2).forEach((p) => {
+        sampleItems.push({ label: p.name, code: p.partNumber || "PART", type: "Part" });
+      });
+      previewPills.innerHTML = sampleItems.map(
+        (s) => `
+        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#1e242d] border border-[#333b47] text-[11px] text-slate-200">
+          <span class="text-amber-400 font-mono font-bold">${s.code}</span>
+          <span class="text-[#8895a7] truncate max-w-[120px]">${s.label}</span>
+        </span>
+      `
+      ).join("");
+      if (sampleItems.length < result.counts.total) {
+        previewPills.innerHTML += `
+        <span class="inline-flex items-center px-1.5 py-0.5 text-[10px] text-cyan-400">
+          +${result.counts.total - sampleItems.length} more
+        </span>
+      `;
+      }
+      if (doImportBtn) doImportBtn.disabled = false;
+    } else {
+      statusDot.className = "w-2 h-2 rounded-full bg-rose-500";
+      statusTitle.textContent = "Invalid Inventory Code";
+      statusCount.textContent = result.error || "Invalid JSON format or unrecognized schema";
+      previewPills.innerHTML = `<span class="text-rose-400 text-[11px]">${result.error || "Ensure code has valid tool or material arrays."}</span>`;
+      if (doImportBtn) doImportBtn.disabled = true;
+    }
+  }
+  function setupCodeTransferSystem() {
+    const modal = document.getElementById("modal-code-transfer");
+    const closeBtn = document.getElementById("modal-code-transfer-close");
+    const cancelBtn = document.getElementById("modal-code-transfer-cancel");
+    closeBtn?.addEventListener("click", () => modal?.classList.add("hidden"));
+    cancelBtn?.addEventListener("click", () => modal?.classList.add("hidden"));
+    document.getElementById("tab-btn-code-export")?.addEventListener("click", () => switchCodeTransferTab("export"));
+    document.getElementById("tab-btn-code-import")?.addEventListener("click", () => switchCodeTransferTab("import"));
+    const scopeSelect = document.getElementById("code-export-scope");
+    scopeSelect?.addEventListener("change", () => {
+      activeCodeTransferScope = scopeSelect.value;
+      activeSingleExportToolId = null;
+      refreshExportCodeView();
+    });
+    const copyBtn = document.getElementById("btn-copy-export-code");
+    const copyIcon = document.getElementById("icon-copy-code");
+    const copyText = document.getElementById("text-copy-code");
+    const exportTextarea = document.getElementById("code-export-textarea");
+    copyBtn?.addEventListener("click", async () => {
+      if (!exportTextarea) return;
+      const success = await copyCodeToClipboard(exportTextarea.value);
+      if (success) {
+        if (copyText) copyText.textContent = "\u2713 Copied to Clipboard!";
+        if (copyBtn) copyBtn.classList.add("border-emerald-500", "text-emerald-400");
+        showToast("Inventory code copied to clipboard", "success");
+        setTimeout(() => {
+          if (copyText) copyText.textContent = "Copy Code to Clipboard";
+          if (copyBtn) copyBtn.classList.remove("border-emerald-500", "text-emerald-400");
+        }, 2e3);
+      } else {
+        showToast("Please select and copy the text manually", "warning");
+      }
+    });
+    document.getElementById("btn-download-export-code")?.addEventListener("click", () => {
+      if (!exportTextarea) return;
+      const dateStr = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+      const filename = `shop_inventory_code_${activeCodeTransferScope}_${dateStr}.json`;
+      downloadFile(exportTextarea.value, filename, "application/json");
+      showToast(`Downloaded inventory code file: ${filename}`, "success");
+    });
+    document.getElementById("btn-select-all-export-code")?.addEventListener("click", () => {
+      if (exportTextarea) {
+        exportTextarea.focus();
+        exportTextarea.select();
+        showToast("Code text selected", "info");
+      }
+    });
+    const importTextarea = document.getElementById("code-import-textarea");
+    importTextarea?.addEventListener("input", () => {
+      validateAndInspectImport();
+    });
+    const fileInput = document.getElementById("code-import-file");
+    fileInput?.addEventListener("change", () => {
+      const file = fileInput.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (importTextarea && typeof e.target?.result === "string") {
+            importTextarea.value = e.target.result;
+            validateAndInspectImport();
+            showToast(`Loaded file: ${file.name}`, "info");
+          }
+        };
+        reader.readAsText(file);
+      }
+    });
+    document.getElementById("btn-paste-clipboard")?.addEventListener("click", async () => {
+      try {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          const text = await navigator.clipboard.readText();
+          if (text && importTextarea) {
+            importTextarea.value = text;
+            validateAndInspectImport();
+            showToast("Pasted code from clipboard", "success");
+            return;
+          }
+        }
+      } catch (e) {
+      }
+      showToast("Clipboard access denied. Please paste directly into the box with Ctrl+V / Cmd+V", "info");
+    });
+    document.getElementById("btn-clear-code-import")?.addEventListener("click", () => {
+      if (importTextarea) {
+        importTextarea.value = "";
+        validateAndInspectImport();
+        showToast("Cleared import text", "info");
+      }
+    });
+    const doImportBtn = document.getElementById("btn-do-code-import");
+    doImportBtn?.addEventListener("click", async () => {
+      if (!importTextarea) return;
+      const raw = importTextarea.value.trim();
+      if (!raw) {
+        showToast("Please paste or upload inventory code first", "warning");
+        return;
+      }
+      const validation = parseAndValidateCode(raw);
+      if (!validation.isValid) {
+        showToast(validation.error || "Invalid code structure", "danger");
+        return;
+      }
+      const replaceRadio = document.querySelector('input[name="code-import-strategy"][value="replace"]');
+      const isReplace = replaceRadio?.checked || false;
+      const strategy = isReplace ? "replace" : "merge";
+      if (strategy === "replace") {
+        const confirmed = await confirmDelete(
+          `This will OVERWRITE and replace your active inventory with ${validation.counts.total} items from this code. Are you sure?`,
+          "Replace Complete Inventory"
+        );
+        if (!confirmed) return;
+      }
+      const res = applyImportedInventory(
+        strategy,
+        validation.data,
+        stockItems,
+        toolItems,
+        machinePartItems
+      );
+      stockItems = res.stock;
+      toolItems = res.tools;
+      machinePartItems = res.parts;
+      persistAllInventory();
+      modal?.classList.add("hidden");
+      const totalAffected = res.stats.added + res.stats.updated;
+      showToast(
+        strategy === "replace" ? `Replaced inventory: Loaded ${totalAffected} items from code` : `Synced code: Added ${res.stats.added} new, updated ${res.stats.updated} existing items`,
+        "success"
+      );
+      renderApp();
+    });
   }
   function printInventoryLabels() {
     const container = document.getElementById("print-labels-container");

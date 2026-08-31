@@ -28,8 +28,16 @@ export function renderToolsTable(
               </span>
               <span class="font-bold text-white tracking-tight">${tool.name}</span>
             </div>
-            <div class="flex items-center gap-2 text-[11px] text-[#717d91] font-mono mt-0.5">
-              <span>SKU: <strong class="text-[#cbd5e1]">${tool.sku || 'N/A'}</strong></span>
+            <div class="flex items-center gap-2 text-[11px] text-[#717d91] font-mono mt-0.5 flex-wrap">
+              <span class="inline-flex items-center gap-1">
+                <span>SKU/Code:</span>
+                <strong class="text-[#cbd5e1] font-bold">${tool.sku || 'N/A'}</strong>
+                ${tool.sku ? `
+                  <button type="button" data-action="copy-tool-sku" data-id="${tool.id}" class="text-cyan-400 hover:text-cyan-200 p-0.5 rounded hover:bg-cyan-950/50 inline-flex items-center" title="Copy Tool Code">
+                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  </button>
+                ` : ''}
+              </span>
               ${tool.sizeDiameter ? `<span>• Size: <strong class="text-amber-300">${tool.sizeDiameter}</strong></span>` : ''}
               ${tool.flutes ? `<span>• Geom: <strong class="text-slate-300">${tool.flutes}</strong></span>` : ''}
               ${tool.coating ? `<span>• Coat: <strong class="text-cyan-300">${tool.coating}</strong></span>` : ''}
@@ -95,6 +103,16 @@ export function renderToolsTable(
             <div class="flex items-center justify-end gap-1 font-mono">
               <button 
                 type="button" 
+                data-action="export-single-tool-code" 
+                data-id="${tool.id}" 
+                class="btn-metal p-1.5 rounded text-cyan-300 hover:text-white" 
+                title="Export Tool Code / JSON"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </button>
+
+              <button 
+                type="button" 
                 data-action="qr-tool" 
                 data-id="${tool.id}" 
                 class="btn-metal p-1.5 rounded text-amber-300 hover:text-white" 
@@ -154,8 +172,17 @@ export function renderToolsCards(
                   </span>
                   <span class="font-bold text-white text-xs">${tool.name}</span>
                 </div>
-                <div class="text-[11px] text-[#717d91] font-mono mt-0.5">
-                  <span>Size: <strong class="text-amber-300">${tool.sizeDiameter}</strong></span>
+                <div class="text-[11px] text-[#717d91] font-mono mt-0.5 flex-wrap flex items-center gap-1.5">
+                  <span class="inline-flex items-center gap-1">
+                    <span>Code:</span>
+                    <strong class="text-[#cbd5e1]">${tool.sku || 'N/A'}</strong>
+                    ${tool.sku ? `
+                      <button type="button" data-action="copy-tool-sku" data-id="${tool.id}" class="text-cyan-400 hover:text-cyan-200 p-0.5" title="Copy Tool Code">
+                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                      </button>
+                    ` : ''}
+                  </span>
+                  <span>• Size: <strong class="text-amber-300">${tool.sizeDiameter}</strong></span>
                   ${tool.coating ? ` • Coat: <strong class="text-cyan-300">${tool.coating}</strong>` : ''}
                 </div>
               </div>
@@ -210,6 +237,9 @@ export function renderToolsCards(
 
             <!-- Card Actions -->
             <div class="flex items-center gap-1">
+              <button type="button" data-action="export-single-tool-code" data-id="${tool.id}" class="btn-metal p-1 rounded text-cyan-300 hover:text-white" title="Export Tool Code / JSON">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              </button>
               <button type="button" data-action="qr-tool" data-id="${tool.id}" class="btn-metal p-1 rounded text-amber-300" title="QR Asset Tag">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
               </button>
