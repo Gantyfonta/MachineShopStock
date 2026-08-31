@@ -14749,6 +14749,7 @@
     setupGlobalActionDelegates();
     setupModalForms();
     setupToolsMenu();
+    setupThemeSwitcher();
     updateCategoryChips();
     updateLocationDropdown();
     renderApp();
@@ -16294,6 +16295,81 @@ Generated: ${(/* @__PURE__ */ new Date()).toLocaleString()}
     document.getElementById("btn-print-labels")?.addEventListener("click", () => {
       printInventoryLabels();
     });
+  }
+  var THEME_STORAGE_KEY = "machine_shop_theme";
+  function getCurrentTheme() {
+    try {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY);
+      if (saved === "light" || saved === "metallic" || saved === "dark") {
+        return saved;
+      }
+    } catch (e) {
+    }
+    return "dark";
+  }
+  function applyTheme(theme, showNotification = false) {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch (e) {
+    }
+    document.documentElement.setAttribute("data-theme", theme);
+    if (theme === "light") {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    }
+    const iconSpan = document.getElementById("theme-active-icon");
+    const labelSpan = document.getElementById("theme-active-label");
+    if (theme === "light") {
+      if (iconSpan) iconSpan.textContent = "\u2600\uFE0F";
+      if (labelSpan) labelSpan.textContent = "Precision Light";
+    } else if (theme === "metallic") {
+      if (iconSpan) iconSpan.textContent = "\u2699\uFE0F";
+      if (labelSpan) labelSpan.textContent = "Brushed Steel";
+    } else {
+      if (iconSpan) iconSpan.textContent = "\u{1F319}";
+      if (labelSpan) labelSpan.textContent = "Dark Metal";
+    }
+    document.querySelectorAll("[data-theme-check]").forEach((el) => {
+      const checkTarget = el.getAttribute("data-theme-check");
+      if (checkTarget === theme) {
+        el.classList.remove("hidden");
+      } else {
+        el.classList.add("hidden");
+      }
+    });
+    if (showNotification) {
+      const names = {
+        dark: "\u{1F319} Dark Metal (Titanium / Carbide)",
+        light: "\u2600\uFE0F Precision Light (Clean Shop / Inspection)",
+        metallic: "\u2699\uFE0F Brushed Steel (Chrome & Stainless)"
+      };
+      showToast(`Switched theme to ${names[theme]}`, "info");
+    }
+  }
+  function setupThemeSwitcher() {
+    const themeBtn = document.getElementById("btn-theme-switcher");
+    const themeMenu = document.getElementById("menu-theme-dropdown");
+    themeBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      themeMenu?.classList.toggle("hidden");
+    });
+    document.addEventListener("click", () => {
+      themeMenu?.classList.add("hidden");
+    });
+    document.querySelectorAll(".theme-option-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const theme = btn.getAttribute("data-theme");
+        if (theme) {
+          applyTheme(theme, true);
+          themeMenu?.classList.add("hidden");
+        }
+      });
+    });
+    applyTheme(getCurrentTheme(), false);
   }
   function parseAndImportCSV(csvText) {
     const lines = csvText.split(/\r?\n/).filter((l) => l.trim().length > 0);

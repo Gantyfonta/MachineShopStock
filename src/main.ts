@@ -124,6 +124,7 @@ function initApp() {
   setupGlobalActionDelegates();
   setupModalForms();
   setupToolsMenu();
+  setupThemeSwitcher();
 
   // 4. Initial Render
   updateCategoryChips();
@@ -1975,6 +1976,101 @@ function setupToolsMenu() {
   document.getElementById('btn-print-labels')?.addEventListener('click', () => {
     printInventoryLabels();
   });
+}
+
+// =============================================================
+// Theme Switcher System (Dark Metal, Precision Light, Brushed Steel)
+// =============================================================
+export type ShopTheme = 'dark' | 'light' | 'metallic';
+const THEME_STORAGE_KEY = 'machine_shop_theme';
+
+export function getCurrentTheme(): ShopTheme {
+  try {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    if (saved === 'light' || saved === 'metallic' || saved === 'dark') {
+      return saved;
+    }
+  } catch (e) {}
+  return 'dark';
+}
+
+export function applyTheme(theme: ShopTheme, showNotification: boolean = false) {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch (e) {}
+
+  document.documentElement.setAttribute('data-theme', theme);
+  if (theme === 'light') {
+    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.add('light');
+  } else {
+    document.documentElement.classList.add('dark');
+    document.documentElement.classList.remove('light');
+  }
+
+  // Update Header Button UI
+  const iconSpan = document.getElementById('theme-active-icon');
+  const labelSpan = document.getElementById('theme-active-label');
+
+  if (theme === 'light') {
+    if (iconSpan) iconSpan.textContent = '☀️';
+    if (labelSpan) labelSpan.textContent = 'Precision Light';
+  } else if (theme === 'metallic') {
+    if (iconSpan) iconSpan.textContent = '⚙️';
+    if (labelSpan) labelSpan.textContent = 'Brushed Steel';
+  } else {
+    if (iconSpan) iconSpan.textContent = '🌙';
+    if (labelSpan) labelSpan.textContent = 'Dark Metal';
+  }
+
+  // Update Checkmarks
+  document.querySelectorAll('[data-theme-check]').forEach((el) => {
+    const checkTarget = (el as HTMLElement).getAttribute('data-theme-check');
+    if (checkTarget === theme) {
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
+  });
+
+  if (showNotification) {
+    const names: Record<ShopTheme, string> = {
+      dark: '🌙 Dark Metal (Titanium / Carbide)',
+      light: '☀️ Precision Light (Clean Shop / Inspection)',
+      metallic: '⚙️ Brushed Steel (Chrome & Stainless)'
+    };
+    showToast(`Switched theme to ${names[theme]}`, 'info');
+  }
+}
+
+function setupThemeSwitcher() {
+  const themeBtn = document.getElementById('btn-theme-switcher');
+  const themeMenu = document.getElementById('menu-theme-dropdown');
+
+  // Toggle Theme Dropdown
+  themeBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    themeMenu?.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => {
+    themeMenu?.classList.add('hidden');
+  });
+
+  // Theme option clicks
+  document.querySelectorAll('.theme-option-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const theme = (btn as HTMLElement).getAttribute('data-theme') as ShopTheme;
+      if (theme) {
+        applyTheme(theme, true);
+        themeMenu?.classList.add('hidden');
+      }
+    });
+  });
+
+  // Apply initial saved theme
+  applyTheme(getCurrentTheme(), false);
 }
 
 function parseAndImportCSV(csvText: string) {

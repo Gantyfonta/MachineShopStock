@@ -27,6 +27,22 @@
     </script>
     <!-- Standalone Machined Theme CSS -->
     <link rel="stylesheet" href="./src/style.css" />
+    <!-- Prevent theme flicker on load -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('machine_shop_theme') || 'dark';
+          document.documentElement.setAttribute('data-theme', saved);
+          if (saved === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          }
+        } catch(e) {}
+      })();
+    </script>
     <!-- QR Code Generator and In-App Camera Scanner CDN scripts -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
@@ -110,6 +126,48 @@
           </button>
 
           <div class="h-4 w-px bg-[#333842] mx-0.5 hidden sm:block"></div>
+
+          <!-- Theme Switcher Dropdown -->
+          <div class="relative inline-block text-left">
+            <button id="btn-theme-switcher" class="btn-metal inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-mono" title="Change App Theme">
+              <span id="theme-active-icon">🌙</span>
+              <span id="theme-active-label" class="hidden md:inline">Dark Metal</span>
+              <svg class="w-3 h-3 text-[#94a3b8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div id="menu-theme-dropdown" class="hidden absolute right-0 mt-1.5 w-52 rounded-md metal-panel border border-[#3d4452] shadow-2xl z-50 py-1 text-xs font-mono">
+              <div class="px-3 py-1 text-[10px] uppercase font-bold text-[#8b98ab] tracking-wider border-b border-[#2d323b] mb-1">Theme Palette</div>
+              <button class="theme-option-btn w-full text-left px-3 py-2 hover:bg-[#282e39] flex items-center justify-between text-[#e2e8f0]" data-theme="dark">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">🌙</span>
+                  <div>
+                    <div class="font-bold">Dark Metal</div>
+                    <div class="text-[10px] text-[#717d91]">Titanium / Carbide</div>
+                  </div>
+                </div>
+                <span class="theme-check-mark text-blue-400 font-bold" data-theme-check="dark">✓</span>
+              </button>
+              <button class="theme-option-btn w-full text-left px-3 py-2 hover:bg-[#282e39] flex items-center justify-between text-[#e2e8f0]" data-theme="light">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">☀️</span>
+                  <div>
+                    <div class="font-bold">Precision Light</div>
+                    <div class="text-[10px] text-[#717d91]">Clean Shop / Inspection</div>
+                  </div>
+                </div>
+                <span class="theme-check-mark text-blue-400 font-bold hidden" data-theme-check="light">✓</span>
+              </button>
+              <button class="theme-option-btn w-full text-left px-3 py-2 hover:bg-[#282e39] flex items-center justify-between text-[#e2e8f0]" data-theme="metallic">
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">⚙️</span>
+                  <div>
+                    <div class="font-bold">Brushed Steel</div>
+                    <div class="text-[10px] text-[#717d91]">Chrome & Stainless</div>
+                  </div>
+                </div>
+                <span class="theme-check-mark text-blue-400 font-bold hidden" data-theme-check="metallic">✓</span>
+              </button>
+            </div>
+          </div>
 
           <!-- Tools Dropdown -->
           <div class="relative inline-block text-left">
